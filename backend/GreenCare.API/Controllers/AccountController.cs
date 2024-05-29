@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GreenCare.Controllers
+namespace GreenCare.API.Controllers
 {
     public class AccountController : Controller
     {

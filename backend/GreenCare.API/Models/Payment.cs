@@ -1,4 +1,4 @@
-﻿namespace GreenCare.Data.Entities
+﻿namespace GreenCare.API.Models
 {
     public class Payment
     {

@@ -1,5 +1,4 @@
-
-namespace GreenCare
+namespace GreenCare.API
 {
     public class Program
     {
