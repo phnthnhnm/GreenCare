@@ -1,26 +1,31 @@
-﻿namespace GreenCare.API.Models
+﻿using System;
+using System.Collections.Generic;
+
+namespace GreenCare.API.Models;
+
+public partial class Account
 {
-    public class Account
-    {
-        public int id { get; private set; }
-        public string email { get; private set; }
-        public string password { get; private set; }
-        public string role { get; private set; }
-        public string name { get; private set; }
-        public string phone { get; private set; }
-        public string address { get; private set; }
+    public int Id { get; set; }
 
-        public Account(int id, string email, string password, string role, string name, string phone, string address)
-        {
-            this.id = id;
-            this.email = email;
-            this.password = password;
-            this.role = role;
-            this.name = name;
-            this.phone = phone;
-            this.address = address;
-        }
+    public string Email { get; set; } = null!;
 
-        public Account() { }
-    }
+    public string Password { get; set; } = null!;
+
+    public string Role { get; set; } = null!;
+
+    public string Name { get; set; } = null!;
+
+    public string? Phone { get; set; }
+
+    public string? Address { get; set; }
+
+    public virtual ICollection<Appointment> AppointmentCustomers { get; set; } = new List<Appointment>();
+
+    public virtual ICollection<Appointment> AppointmentExperts { get; set; } = new List<Appointment>();
+
+    public virtual ICollection<PlantCareLog> PlantCareLogs { get; set; } = new List<PlantCareLog>();
+
+    public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
+
+    public virtual ICollection<Service> Services { get; set; } = new List<Service>();
 }
