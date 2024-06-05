@@ -75,7 +75,7 @@ namespace GreenCare.API.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<PlantTypeDto>> Register([FromBody] AddPlantTypeDto addPlantTypeDto)
+        public async Task<ActionResult<PlantTypeDto>> AddPlantType([FromBody] AddPlantTypeDto addPlantTypeDto)
         {
             if (!ModelState.IsValid)
             {

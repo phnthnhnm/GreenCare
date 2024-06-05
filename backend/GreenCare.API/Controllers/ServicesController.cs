@@ -74,5 +74,136 @@ namespace GreenCare.API.Controllers
 
             return serviceDto;
         }
+
+        [HttpPost]
+        public async Task<ActionResult<ServiceDto>> AddService([FromBody] AddServiceDto addServiceDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                if (await _context.Services.AnyAsync(s => s.Name == addServiceDto.Name))
+                {
+                    return Conflict("This service already exists.");
+                }
+
+                var newService = new Service
+                {
+                    Name = addServiceDto.Name,
+                    Description = addServiceDto.Description,
+                    Price = addServiceDto.Price,
+                    PlantTypeId = addServiceDto.PlantTypeId,
+                    ExpertId = addServiceDto.ExpertId
+                };
+
+                _context.Services.Add(newService);
+                await _context.SaveChangesAsync();
+
+                // Map to DTO before returning
+                var serviceDto = new ServiceDto
+                {
+                    Id = newService.Id,
+                    Name = newService.Name,
+                    Description = newService.Description,
+                    Price = newService.Price,
+                    PlantTypeId = newService.PlantTypeId,
+                    PlantTypeName = newService.PlantType?.Name,
+                    ExpertId = newService.ExpertId,
+                    ExpertName = newService.Expert?.Name,
+                };
+
+                return CreatedAtAction(nameof(GetService), new { id = newService.Id }, serviceDto);
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, "An error occurred while creating the service.");
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateService(int id, [FromBody] UpdateServiceDto updateServiceDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var existingService = await _context.Services
+                    .Include(s => s.PlantType)
+                    .Include(s => s.Expert)
+                    .FirstOrDefaultAsync(s => s.Id == id);
+
+                if (existingService == null)
+                {
+                    return NotFound(new { Message = "Service not found." });
+                }
+
+                // Check for duplicate name
+                if (await _context.Services.AnyAsync(s => s.Name.ToLower() == updateServiceDto.Name.ToLower() && s.Id != id))
+                {
+                    return Conflict(new { Message = "Service with this name already exists." });
+                }
+
+                // Update the service
+                existingService.Name = updateServiceDto.Name;
+                existingService.Description = updateServiceDto.Description;
+                existingService.Price = updateServiceDto.Price;
+                existingService.PlantTypeId = updateServiceDto.PlantTypeId;
+                existingService.ExpertId = updateServiceDto.ExpertId;
+
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.Services.Any(s => s.Id == id))
+                {
+                    return NotFound(new { Message = "Service not found." });
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while updating the service.");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteService(int id)
+        {
+            try
+            {
+                var service = await _context.Services.FindAsync(id);
+                if (service == null)
+                {
+                    return NotFound();
+                }
+
+                _context.Services.Remove(service);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (DbUpdateException ex)
+            {
+                Console.Error.WriteLine(ex.Message);
+
+                return Conflict("Cannot delete service due to existing dependencies.");
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex.Message);
+                return StatusCode(500, "Internal server error.");
+            }
+        }
     }
 }
