@@ -1,5 +1,6 @@
 ﻿using GreenCare.API.Data;
 using GreenCare.API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Scripting;
@@ -35,7 +36,7 @@ namespace GreenCare.API.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpPost("{id}")]
         public async Task<ActionResult<Account>> GetAccount(int id)
         {
             try
@@ -59,8 +60,30 @@ namespace GreenCare.API.Controllers
             }
         }
 
-        [HttpPost("AddAccount")]
-        public async Task<ActionResult<Account>> AddAccount(Account account)
+        [HttpGet("Login")]
+        public async Task<ActionResult<Account>> Login(Account account)
+        {
+            try
+            {
+                var existingAccount = await _context.Accounts.FirstOrDefaultAsync(a => a.Email == account.Email && a.Password == account.Password);
+
+                if (existingAccount == null)
+                {
+                    return NotFound("Invalid email or password.");
+                }
+
+                return Ok(existingAccount);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex.Message);
+
+                return StatusCode(500, "Internal server error.");
+            }
+        }
+
+        [HttpPost("Register")]
+        public async Task<ActionResult<Account>> Register(Account account)
         {
             try
             {
@@ -168,5 +191,6 @@ namespace GreenCare.API.Controllers
                 return StatusCode(500, "An error occurred while deleting the account.");
             }
         }
+
     }
 }
