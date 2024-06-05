@@ -193,7 +193,7 @@ namespace GreenCare.API.Controllers
             }
         }
 
-        [HttpPut("UpdateAccount/{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAccount(int id, [FromBody] UpdateAccountDto updateDto)
         {
             if (!ModelState.IsValid)
@@ -258,7 +258,7 @@ namespace GreenCare.API.Controllers
             return _context.Accounts.Any(e => e.Id == id);
         }
 
-        [HttpDelete("DeleteAccount/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAccount(int id)
         {
             try
