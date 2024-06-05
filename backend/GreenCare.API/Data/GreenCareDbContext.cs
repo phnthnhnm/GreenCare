@@ -1,4 +1,4 @@
-﻿using GreenCare.API.Models;
+﻿using GreenCare.API.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GreenCare.API.Data;

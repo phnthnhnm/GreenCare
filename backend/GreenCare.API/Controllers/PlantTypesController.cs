@@ -1,5 +1,5 @@
 ﻿using GreenCare.API.Data;
-using GreenCare.API.Models;
+using GreenCare.API.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

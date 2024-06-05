@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GreenCare.API.Models;
+namespace GreenCare.API.Entities;
 
 public partial class PlantType
 {
