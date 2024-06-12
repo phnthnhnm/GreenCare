@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GreenCare.API.Entities;
+namespace GreenCare.API.Models;
 
 public partial class Service
 {
@@ -13,7 +13,7 @@ public partial class Service
 
     public decimal Price { get; set; }
 
-    public int? PlantTypeId { get; set; }
+    public int PlantTypeId { get; set; }
 
     public int? ExpertId { get; set; }
 
@@ -21,7 +21,7 @@ public partial class Service
 
     public virtual Account? Expert { get; set; }
 
-    public virtual PlantType? PlantType { get; set; }
+    public virtual PlantType PlantType { get; set; } = null!;
 
     public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
 }

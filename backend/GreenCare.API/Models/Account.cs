@@ -1,4 +1,7 @@
-﻿namespace GreenCare.API.Entities;
+﻿using System;
+using System.Collections.Generic;
+
+namespace GreenCare.API.Models;
 
 public partial class Account
 {

@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GreenCare.API.Models.DTOs
+namespace GreenCare.API.DTOs
 {
-    public class UpdatePlantTypeDto
+    public class AddPlantTypeDto
     {
         [Required]
         public string Name { get; set; } = null!;

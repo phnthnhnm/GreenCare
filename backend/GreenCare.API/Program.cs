@@ -1,5 +1,9 @@
 using GreenCare.API.Data;
+using GreenCare.API.Repositories.Interfaces;
+using GreenCare.API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using GreenCare.API.Repositories.Implementations;
+using GreenCare.API.Services.Implementations;
 
 namespace GreenCare.API
 {
@@ -20,6 +24,9 @@ namespace GreenCare.API
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+
+            builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
 
             var app = builder.Build();
 

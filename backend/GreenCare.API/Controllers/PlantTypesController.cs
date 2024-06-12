@@ -1,10 +1,8 @@
 ﻿using GreenCare.API.Data;
-using GreenCare.API.Entities;
-using GreenCare.API.Models.DTOs;
-using Microsoft.AspNetCore.Http;
+using GreenCare.API.DTOs;
+using GreenCare.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Principal;
 
 namespace GreenCare.API.Controllers
 {
@@ -20,7 +18,7 @@ namespace GreenCare.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PlantTypeDto>>> GetAllPlantTypes()
+        public async Task<ActionResult<IEnumerable<PlantTypeDto>>> GetPlantTypes()
         {
             try
             {

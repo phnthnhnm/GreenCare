@@ -1,4 +1,4 @@
-﻿namespace GreenCare.API.Models.DTOs
+﻿namespace GreenCare.API.DTOs
 {
     public class PlantTypeDto
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GreenCare.API.Entities;
+namespace GreenCare.API.Models;
 
 public partial class Appointment
 {

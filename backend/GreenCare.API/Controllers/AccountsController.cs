@@ -1,10 +1,7 @@
-﻿using GreenCare.API.Data;
-using GreenCare.API.Entities;
-using GreenCare.API.Models.DTOs;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using GreenCare.API.DTOs;
+using GreenCare.API.Services;
+using GreenCare.API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.EntityFrameworkCore;
 
 namespace GreenCare.API.Controllers
@@ -13,134 +10,52 @@ namespace GreenCare.API.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        public readonly GreenCareDbContext _context;
+        private readonly IAccountService _accountService;
 
-        public AccountsController(GreenCareDbContext context)
+        public AccountsController(IAccountService accountService) // Inject IAccountService
         {
-            _context = context;
+            _accountService = accountService;
         }
 
+        // GET: api/Accounts
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AccountDto>>> GetAllAccounts()
+        public async Task<ActionResult<IEnumerable<AccountDto>>> GetAccounts()
         {
-            try
-            {
-                var accounts = await _context.Accounts
-                    .Include(a => a.AppointmentCustomers)
-                    .Include(a => a.AppointmentExperts)
-                    .Include(a => a.PlantCareLogs)
-                    .Include(a => a.Reviews)
-                    .Include(a => a.Services)
-                    .ToListAsync();
-
-                var accountDtos = accounts.Select(account => new AccountDto
-                {
-                    Id = account.Id,
-                    Email = account.Email,
-                    Role = account.Role,
-                    Name = account.Name,
-                    Phone = account.Phone,
-                    Address = account.Address,
-                    AppointmentsAsCustomerCount = account.AppointmentCustomers.Count,
-                    AppointmentsAsExpertCount = account.AppointmentExperts.Count,
-                    PlantCareLogCount = account.PlantCareLogs.Count,
-                    ReviewCount = account.Reviews.Count,
-                    ServiceCount = account.Services.Count
-                }).ToList();
-
-                return Ok(accountDtos);
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine(ex.Message);
-                return StatusCode(500, "Internal server error.");
-            }
+            var accounts = await _accountService.GetAllAccountsAsync();
+            return Ok(accounts);
         }
 
-
+        // GET: api/Accounts/5
         [HttpGet("{id}")]
         public async Task<ActionResult<AccountDto>> GetAccount(int id)
         {
-            try
+            var account = await _accountService.GetAccountByIdAsync(id);
+            if (account == null)
             {
-                var account = await _context.Accounts
-                    .Include(a => a.AppointmentCustomers)
-                    .Include(a => a.AppointmentExperts)
-                    .Include(a => a.PlantCareLogs)
-                    .Include(a => a.Reviews)
-                    .Include(a => a.Services)
-                    .FirstOrDefaultAsync(a => a.Id == id); // Find the specific account
-
-                if (account == null)
-                {
-                    return NotFound(); // Account not found
-                }
-
-                var accountDto = new AccountDto
-                {
-                    Id = account.Id,
-                    Email = account.Email,
-                    Role = account.Role,
-                    Name = account.Name,
-                    Phone = account.Phone,
-                    Address = account.Address,
-                    AppointmentsAsCustomerCount = account.AppointmentCustomers.Count,
-                    AppointmentsAsExpertCount = account.AppointmentExperts.Count,
-                    PlantCareLogCount = account.PlantCareLogs.Count,
-                    ReviewCount = account.Reviews.Count,
-                    ServiceCount = account.Services.Count
-                };
-
-                return Ok(accountDto); // Return the DTO
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine(ex.Message);
-                return StatusCode(500, "Internal server error.");
-            }
+            return Ok(account);
         }
 
-
+        // POST: api/Accounts/Login
         [HttpPost("Login")]
         public async Task<ActionResult<AccountDto>> Login([FromBody] LoginRequestDto loginRequest)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState); // Return validation errors
+                return BadRequest(ModelState);
             }
 
-            try
+            var account = await _accountService.LoginAsync(loginRequest);
+            if (account == null)
             {
-                var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Email == loginRequest.Email);
-
-                if (account == null || account.Password != loginRequest.Password)
-                {
-                    return NotFound("Invalid email or password.");
-                }
-
-                var accountDto = new AccountDto
-                {
-                    Id = account.Id,
-                    Email = account.Email,
-                    Role = account.Role,
-                    Name = account.Name,
-                    Phone = account.Phone,
-                    Address = account.Address,
-                    AppointmentsAsCustomerCount = account.AppointmentCustomers.Count,
-                    AppointmentsAsExpertCount = account.AppointmentExperts.Count,
-                    PlantCareLogCount = account.PlantCareLogs.Count,
-                    ReviewCount = account.Reviews.Count,
-                    ServiceCount = account.Services.Count
-                };
-
-                return Ok(accountDto); // Return the AccountDto
+                return NotFound("Invalid email or password.");
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal server error.");
-            }
+
+            return Ok(account);
         }
 
+        // POST: api/Accounts/Register
         [HttpPost("Register")]
         public async Task<ActionResult<AccountDto>> Register([FromBody] RegisterRequestDto registerRequest)
         {
@@ -151,50 +66,18 @@ namespace GreenCare.API.Controllers
 
             try
             {
-                if (await _context.Accounts.AnyAsync(a => a.Email == registerRequest.Email))
-                {
-                    return Conflict("Account with this email already exists.");
-                }
-
-                var newAccount = new Account
-                {
-                    Email = registerRequest.Email,
-                    Password = registerRequest.Password, // Again, NOT for production
-                    Role = registerRequest.Role,
-                    Name = registerRequest.Name,
-                    Phone = registerRequest.Phone,
-                    Address = registerRequest.Address
-                };
-
-                _context.Accounts.Add(newAccount);
-                await _context.SaveChangesAsync();
-
-                // Map to DTO before returning
-                var accountDto = new AccountDto
-                {
-                    Id = newAccount.Id,
-                    Email = newAccount.Email,
-                    Role = newAccount.Role,
-                    Name = newAccount.Name,
-                    Phone = newAccount.Phone,
-                    Address = newAccount.Address,
-                    AppointmentsAsCustomerCount = newAccount.AppointmentCustomers.Count,
-                    AppointmentsAsExpertCount = newAccount.AppointmentExperts.Count,
-                    PlantCareLogCount = newAccount.PlantCareLogs.Count,
-                    ReviewCount = newAccount.Reviews.Count,
-                    ServiceCount = newAccount.Services.Count
-                };
-
-                return CreatedAtAction(nameof(GetAccount), new { id = newAccount.Id }, accountDto);
+                var account = await _accountService.RegisterAsync(registerRequest);
+                return CreatedAtAction(nameof(GetAccount), new { id = account.Id }, account);
             }
             catch (DbUpdateException ex)
             {
-                return StatusCode(500, "An error occurred while creating the account.");
+                return Conflict("Account with this email already exists.");
             }
         }
 
+        // PUT: api/Accounts/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAccount(int id, [FromBody] UpdateAccountDto updateDto)
+        public async Task<IActionResult> UpdateAccount(int id, [FromBody] UpdateAccountDto updateAccountDto)
         {
             if (!ModelState.IsValid)
             {
@@ -203,95 +86,37 @@ namespace GreenCare.API.Controllers
 
             try
             {
-                var existingAccount = await _context.Accounts.FindAsync(id);
-                if (existingAccount == null)
-                {
-                    return NotFound("Account not found.");
-                }
-
-                // Update properties from the DTO
-                existingAccount.Name = updateDto.Name;
-                existingAccount.Email = updateDto.Email;
-                existingAccount.Phone = updateDto.Phone;
-                existingAccount.Address = updateDto.Address;
-                if (!string.IsNullOrEmpty(updateDto.Role))
-                {
-                    existingAccount.Role = updateDto.Role;
-                }
-
-                // **Password Handling (CRITICAL)**
-                if (!string.IsNullOrEmpty(updateDto.Password))
-                {
-                    // **In a production environment, you MUST hash the password here!**
-                    // Use a robust hashing algorithm (e.g., bcrypt, Argon2) with a salt.
-                    existingAccount.Password = updateDto.Password; // Insecure, for example only
-                }
-
-                if (await _context.Accounts.AnyAsync(a => a.Email == updateDto.Email && a.Id != id))
-                {
-                    return Conflict("Account with this email already exists.");
-                }
-
-                await _context.SaveChangesAsync();
-
+                await _accountService.UpdateAccountAsync(id, updateAccountDto);
                 return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (KeyNotFoundException)
             {
-                if (!AccountExists(id))
-                {
-                    return NotFound("Account not found.");
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
-            catch (DbUpdateException ex)
+            catch (DbUpdateException)
             {
-                return StatusCode(500, "An error occurred while updating the account.");
+                return Conflict(); // Possible email conflict
             }
         }
 
-        private bool AccountExists(int id)
-        {
-            return _context.Accounts.Any(e => e.Id == id);
-        }
 
+        // DELETE: api/Accounts/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAccount(int id)
         {
             try
             {
-                var account = await _context.Accounts.FindAsync(id);
-                if (account == null)
-                {
-                    return NotFound(new { Message = "Account not found." });  // Consistent response format
-                }
-
-                if (account.Role == "admin")
-                {
-                    return BadRequest(new { Message = "Cannot delete an admin account." }); // Consistent format
-                }
-
-                // **Check for related data (optional but recommended)**
-                if (account.AppointmentCustomers.Any() || account.AppointmentExperts.Any() ||
-                    account.PlantCareLogs.Any() || account.Reviews.Any() || account.Services.Any())
-                {
-                    return Conflict(new { Message = "Cannot delete account with associated data." });
-                }
-
-                _context.Accounts.Remove(account);
-                await _context.SaveChangesAsync();
-
+                await _accountService.DeleteAccountAsync(id);
                 return NoContent();
             }
-            catch (DbUpdateException ex)
+            catch (KeyNotFoundException)
             {
-                return StatusCode(500, "An error occurred while deleting the account.");
+                return NotFound();
+            }
+            catch (InvalidOperationException ex) // For admin delete or accounts with related data
+            {
+                return BadRequest(ex.Message);
             }
         }
-
-
     }
 }

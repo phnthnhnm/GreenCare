@@ -1,15 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace GreenCare.API.Models.DTOs
+﻿namespace GreenCare.API.DTOs
 {
-    public class UpdateServiceDto
+    public class ServiceDto
     {
-        [Required]
+        public int Id { get; set; }
         public string Name { get; set; } = null!;
         public string? Description { get; set; }
-        [Required]
         public decimal Price { get; set; }
         public int? PlantTypeId { get; set; }
+        public string? PlantTypeName { get; set; }
         public int? ExpertId { get; set; }
+        public string? ExpertName { get; set; }
     }
 }

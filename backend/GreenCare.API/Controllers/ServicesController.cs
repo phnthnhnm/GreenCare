@@ -1,7 +1,6 @@
 ﻿using GreenCare.API.Data;
-using GreenCare.API.Entities;
-using GreenCare.API.Models.DTOs;
-using Microsoft.AspNetCore.Http;
+using GreenCare.API.DTOs;
+using GreenCare.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,7 +18,7 @@ namespace GreenCare.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ServiceDto>>> GetAllServices()
+        public async Task<ActionResult<IEnumerable<ServiceDto>>> GetServices()
         {
             try
             {
