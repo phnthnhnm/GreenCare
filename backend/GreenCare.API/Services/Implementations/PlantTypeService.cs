@@ -5,7 +5,7 @@ using GreenCare.API.Services.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
-namespace GreenCare.API.Services
+namespace GreenCare.API.Services.Implementations
 {
     public class PlantTypeService : IPlantTypeService
     {

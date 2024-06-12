@@ -1,6 +1,6 @@
-﻿using GreenCare.API.Data;
-using GreenCare.API.DTOs;
-using GreenCare.API.Models;
+﻿using GreenCare.API.DTOs;
+using GreenCare.API.Services;
+using GreenCare.API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,11 +10,11 @@ namespace GreenCare.API.Controllers
     [ApiController]
     public class ServicesController : ControllerBase
     {
-        private readonly GreenCareDbContext _context;
+        private readonly IServiceService _serviceService;
 
-        public ServicesController(GreenCareDbContext context)
+        public ServicesController(IServiceService serviceService)
         {
-            _context = context;
+            _serviceService = serviceService;
         }
 
         [HttpGet]
@@ -22,29 +22,12 @@ namespace GreenCare.API.Controllers
         {
             try
             {
-                var services = await _context.Services
-                    .Include(s => s.PlantType)   // Include PlantType for mapping
-                    .Include(s => s.Expert)     // Include Expert for mapping
-                    .ToListAsync();
-
-                var serviceDtos = services.Select(service => new ServiceDto
-                {
-                    Id = service.Id,
-                    Name = service.Name,
-                    Description = service.Description,
-                    Price = service.Price,
-                    PlantTypeId = service.PlantTypeId,
-                    PlantTypeName = service.PlantType?.Name,
-                    ExpertId = service.ExpertId,
-                    ExpertName = service.Expert?.Name
-                }).ToList();
-
-                return Ok(serviceDtos);
+                var services = await _serviceService.GetAllServicesAsync();
+                return Ok(services);
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine(ex.Message);
-
+                // Logging the error here would be beneficial
                 return StatusCode(500, "Internal server error.");
             }
         }
@@ -52,26 +35,12 @@ namespace GreenCare.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ServiceDto>> GetService(int id)
         {
-            var service = await _context.Services
-                .Include(s => s.PlantType)
-                .Include(s => s.Expert)
-                .FirstOrDefaultAsync(s => s.Id == id);
-
-            if (service == null) return NotFound();
-
-            var serviceDto = new ServiceDto
+            var service = await _serviceService.GetServiceByIdAsync(id);
+            if (service == null)
             {
-                Id = service.Id,
-                Name = service.Name,
-                Description = service.Description,
-                Price = service.Price,
-                PlantTypeId = service.PlantTypeId,
-                PlantTypeName = service.PlantType?.Name, // Safely get the name
-                ExpertId = service.ExpertId,
-                ExpertName = service.Expert?.Name // Safely get the name
-            };
-
-            return serviceDto;
+                return NotFound();
+            }
+            return Ok(service);
         }
 
         [HttpPost]
@@ -84,41 +53,12 @@ namespace GreenCare.API.Controllers
 
             try
             {
-                if (await _context.Services.AnyAsync(s => s.Name == addServiceDto.Name))
-                {
-                    return Conflict("This service already exists.");
-                }
-
-                var newService = new Service
-                {
-                    Name = addServiceDto.Name,
-                    Description = addServiceDto.Description,
-                    Price = addServiceDto.Price,
-                    PlantTypeId = addServiceDto.PlantTypeId,
-                    ExpertId = addServiceDto.ExpertId
-                };
-
-                _context.Services.Add(newService);
-                await _context.SaveChangesAsync();
-
-                // Map to DTO before returning
-                var serviceDto = new ServiceDto
-                {
-                    Id = newService.Id,
-                    Name = newService.Name,
-                    Description = newService.Description,
-                    Price = newService.Price,
-                    PlantTypeId = newService.PlantTypeId,
-                    PlantTypeName = newService.PlantType?.Name,
-                    ExpertId = newService.ExpertId,
-                    ExpertName = newService.Expert?.Name,
-                };
-
-                return CreatedAtAction(nameof(GetService), new { id = newService.Id }, serviceDto);
+                var service = await _serviceService.AddServiceAsync(addServiceDto);
+                return CreatedAtAction(nameof(GetService), new { id = service.Id }, service);
             }
             catch (DbUpdateException ex)
             {
-                return StatusCode(500, "An error occurred while creating the service.");
+                return Conflict("Service with this name already exists.");
             }
         }
 
@@ -132,47 +72,16 @@ namespace GreenCare.API.Controllers
 
             try
             {
-                var existingService = await _context.Services
-                    .Include(s => s.PlantType)
-                    .Include(s => s.Expert)
-                    .FirstOrDefaultAsync(s => s.Id == id);
-
-                if (existingService == null)
-                {
-                    return NotFound(new { Message = "Service not found." });
-                }
-
-                // Check for duplicate name
-                if (await _context.Services.AnyAsync(s => s.Name.ToLower() == updateServiceDto.Name.ToLower() && s.Id != id))
-                {
-                    return Conflict(new { Message = "Service with this name already exists." });
-                }
-
-                // Update the service
-                existingService.Name = updateServiceDto.Name;
-                existingService.Description = updateServiceDto.Description;
-                existingService.Price = updateServiceDto.Price;
-                existingService.PlantTypeId = updateServiceDto.PlantTypeId;
-                existingService.ExpertId = updateServiceDto.ExpertId;
-
-                await _context.SaveChangesAsync();
-
+                await _serviceService.UpdateServiceAsync(id, updateServiceDto);
                 return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (KeyNotFoundException)
             {
-                if (!_context.Services.Any(s => s.Id == id))
-                {
-                    return NotFound(new { Message = "Service not found." });
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound(new { Message = "Service not found." });
             }
-            catch (Exception ex)
+            catch (DbUpdateException)
             {
-                return StatusCode(500, "An error occurred while updating the service.");
+                return Conflict(new { Message = "Service with this name already exists." });
             }
         }
 
@@ -181,27 +90,16 @@ namespace GreenCare.API.Controllers
         {
             try
             {
-                var service = await _context.Services.FindAsync(id);
-                if (service == null)
-                {
-                    return NotFound();
-                }
-
-                _context.Services.Remove(service);
-                await _context.SaveChangesAsync();
-
+                await _serviceService.DeleteServiceAsync(id);
                 return NoContent();
             }
-            catch (DbUpdateException ex)
+            catch (KeyNotFoundException)
             {
-                Console.Error.WriteLine(ex.Message);
-
-                return Conflict("Cannot delete service due to existing dependencies.");
+                return NotFound();
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex) // Catch specific exception for dependencies
             {
-                Console.Error.WriteLine(ex.Message);
-                return StatusCode(500, "Internal server error.");
+                return Conflict(ex.Message); // Return the error message from the exception
             }
         }
     }

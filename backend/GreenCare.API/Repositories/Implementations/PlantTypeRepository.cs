@@ -3,7 +3,7 @@ using GreenCare.API.Models;
 using GreenCare.API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace GreenCare.API.Repositories
+namespace GreenCare.API.Repositories.Implementations
 {
     public class PlantTypeRepository : IPlantTypeRepository
     {
