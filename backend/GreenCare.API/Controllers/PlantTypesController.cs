@@ -1,6 +1,5 @@
-﻿using GreenCare.API.Data;
-using GreenCare.API.DTOs;
-using GreenCare.API.Models;
+﻿using GreenCare.API.DTOs;
+using GreenCare.API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,11 +9,11 @@ namespace GreenCare.API.Controllers
     [ApiController]
     public class PlantTypesController : ControllerBase
     {
-        private readonly GreenCareDbContext _context;
+        private readonly IPlantTypeService _plantTypeService;
 
-        public PlantTypesController(GreenCareDbContext context)
+        public PlantTypesController(IPlantTypeService plantTypeService)
         {
-            _context = context;
+            _plantTypeService = plantTypeService;
         }
 
         [HttpGet]
@@ -22,23 +21,12 @@ namespace GreenCare.API.Controllers
         {
             try
             {
-                var plantTypes = await _context.PlantTypes
-                    .Include(pt => pt.Services)
-                    .ToListAsync();
-
-                // Map PlantType entities to DTOs
-                var plantTypeDtos = plantTypes.Select(pt => new PlantTypeDto
-                {
-                    Id = pt.Id,
-                    Name = pt.Name,
-                    ServiceCount = pt.Services.Count
-                }).ToList();
-
-                return Ok(plantTypeDtos);
+                var plantTypes = await _plantTypeService.GetAllPlantTypesAsync();
+                return Ok(plantTypes);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Internal server error."); // Generic error message
+                return StatusCode(500, "Internal server error.");
             }
         }
 
@@ -47,30 +35,18 @@ namespace GreenCare.API.Controllers
         {
             try
             {
-                var plantType = await _context.PlantTypes
-                    .Include(pt => pt.Services)
-                    .FirstOrDefaultAsync(pt => pt.Id == id);
-
+                var plantType = await _plantTypeService.GetPlantTypeByIdAsync(id);
                 if (plantType == null)
                 {
-                    return NotFound(new { Message = "Plant type not found." }); // Consistent error format
+                    return NotFound(new { Message = "Plant type not found." });
                 }
-
-                var plantTypeDto = new PlantTypeDto
-                {
-                    Id = plantType.Id,
-                    Name = plantType.Name,
-                    ServiceCount = plantType.Services.Count
-                };
-
-                return Ok(plantTypeDto);
+                return Ok(plantType);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, "Internal server error.");
             }
         }
-
 
         [HttpPost]
         public async Task<ActionResult<PlantTypeDto>> AddPlantType([FromBody] AddPlantTypeDto addPlantTypeDto)
@@ -82,38 +58,17 @@ namespace GreenCare.API.Controllers
 
             try
             {
-                if (await _context.PlantTypes.AnyAsync(pt => pt.Name == addPlantTypeDto.Name))
-                {
-                    return Conflict("This plant type already exists.");
-                }
-
-                var newPlantType = new PlantType
-                {
-                    Name = addPlantTypeDto.Name,
-                };
-
-                _context.PlantTypes.Add(newPlantType);
-                await _context.SaveChangesAsync();
-
-                // Map to DTO before returning
-                var plantTypeDto = new PlantTypeDto
-                {
-                    Id = newPlantType.Id,
-                    Name = newPlantType.Name,
-                    ServiceCount = newPlantType.Services.Count
-                };
-
-                return CreatedAtAction(nameof(GetPlantType), new { id = newPlantType.Id }, plantTypeDto);
+                var plantType = await _plantTypeService.AddPlantTypeAsync(addPlantTypeDto);
+                return CreatedAtAction(nameof(GetPlantType), new { id = plantType.Id }, plantType);
             }
             catch (DbUpdateException ex)
             {
-                return StatusCode(500, "An error occurred while creating the plant type.");
+                return Conflict("Plant type with this name already exists.");
             }
         }
 
-
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePlantType(int id, [FromBody] UpdatePlantTypeDto updatedPlantTypeDto)
+        public async Task<IActionResult> UpdatePlantType(int id, [FromBody] UpdatePlantTypeDto updatePlantTypeDto)
         {
             if (!ModelState.IsValid)
             {
@@ -122,70 +77,37 @@ namespace GreenCare.API.Controllers
 
             try
             {
-                var existingPlantType = await _context.PlantTypes.FindAsync(id);
-                if (existingPlantType == null)
-                {
-                    return NotFound(new { Message = "Plant type not found." });
-                }
-
-                // Check for duplicate name (case-insensitive)
-                if (await _context.PlantTypes.AnyAsync(pt =>
-                    pt.Name.ToLower() == updatedPlantTypeDto.Name.ToLower() && pt.Id != id))
-                {
-                    return Conflict(new { Message = "Plant type with this name already exists." });
-                }
-
-                // Update the existing entity with values from the DTO
-                existingPlantType.Name = updatedPlantTypeDto.Name;
-                // Update other properties as needed
-
-                await _context.SaveChangesAsync();
-
+                await _plantTypeService.UpdatePlantTypeAsync(id, updatePlantTypeDto);
                 return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (KeyNotFoundException)
             {
-                if (!_context.PlantTypes.Any(p => p.Id == id))
-                {
-                    return NotFound(new { Message = "Plant type not found." });
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound(new { Message = "Plant type not found." });
             }
-            catch (Exception ex)
+            catch (DbUpdateException)
             {
-                return StatusCode(500, "An error occurred while updating the plant type.");
+                return Conflict(new { Message = "Plant type with this name already exists." });
             }
         }
-
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePlantType(int id)
         {
             try
             {
-                var plantType = await _context.PlantTypes.FindAsync(id);
-                if (plantType == null)
-                {
-                    return NotFound();
-                }
-
-                _context.PlantTypes.Remove(plantType);
-                await _context.SaveChangesAsync();
-
+                await _plantTypeService.DeletePlantTypeAsync(id);
                 return NoContent();
             }
-            catch (DbUpdateException ex)
+            catch (KeyNotFoundException)
             {
-                Console.Error.WriteLine(ex.Message);
-
-                return Conflict("Cannot delete plant type due to existing dependencies.");
+                return NotFound();
+            }
+            catch (InvalidOperationException ex) // Catch specific exception for dependencies
+            {
+                return Conflict(ex.Message); // Return the error message from the exception
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine(ex.Message);
                 return StatusCode(500, "Internal server error.");
             }
         }

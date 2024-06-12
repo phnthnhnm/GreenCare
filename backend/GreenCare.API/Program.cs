@@ -4,6 +4,8 @@ using GreenCare.API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using GreenCare.API.Repositories.Implementations;
 using GreenCare.API.Services.Implementations;
+using GreenCare.API.Repositories;
+using GreenCare.API.Services;
 
 namespace GreenCare.API
 {
@@ -27,6 +29,9 @@ namespace GreenCare.API
 
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
             builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<IPlantTypeRepository, PlantTypeRepository>();
+            builder.Services.AddScoped<IPlantTypeService, PlantTypeService>();
+
 
             var app = builder.Build();
 

@@ -1,6 +1,5 @@
 ﻿using GreenCare.API.DTOs;
 using GreenCare.API.Models;
-using GreenCare.API.Repositories;
 using GreenCare.API.Repositories.Interfaces;
 using GreenCare.API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
