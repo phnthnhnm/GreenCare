@@ -1,4 +1,4 @@
-﻿using GreenCare.API.DTOs;
+﻿using GreenCare.API.DTOs.PlantType;
 
 namespace GreenCare.API.Services.Interfaces
 {

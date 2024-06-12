@@ -1,4 +1,4 @@
-﻿using GreenCare.API.DTOs;
+﻿using GreenCare.API.DTOs.Account;
 using GreenCare.API.Models;
 using GreenCare.API.Repositories.Interfaces;
 using GreenCare.API.Services.Interfaces;

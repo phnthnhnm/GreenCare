@@ -1,4 +1,4 @@
-﻿using GreenCare.API.DTOs;
+﻿using GreenCare.API.DTOs.Account;
 using GreenCare.API.Services;
 using GreenCare.API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;

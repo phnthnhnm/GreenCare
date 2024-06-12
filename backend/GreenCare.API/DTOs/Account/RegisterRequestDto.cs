@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GreenCare.API.DTOs
+namespace GreenCare.API.DTOs.Account
 {
     public class RegisterRequestDto
     {

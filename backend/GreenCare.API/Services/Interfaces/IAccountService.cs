@@ -1,4 +1,4 @@
-﻿using GreenCare.API.DTOs;
+﻿using GreenCare.API.DTOs.Account;
 
 namespace GreenCare.API.Services.Interfaces
 {

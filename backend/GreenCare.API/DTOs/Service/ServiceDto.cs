@@ -1,4 +1,4 @@
-﻿namespace GreenCare.API.DTOs
+﻿namespace GreenCare.API.DTOs.Service
 {
     public class ServiceDto
     {
