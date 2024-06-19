@@ -1,9 +1,9 @@
 using GreenCare.API.Data;
+using GreenCare.API.Repositories.Implementations;
 using GreenCare.API.Repositories.Interfaces;
+using GreenCare.API.Services.Implementations;
 using GreenCare.API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using GreenCare.API.Repositories.Implementations;
-using GreenCare.API.Services.Implementations;
 
 namespace GreenCare.API
 {

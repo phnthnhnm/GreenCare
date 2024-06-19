@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using GreenCare.API.Models;
+﻿using GreenCare.API.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace GreenCare.API.Data;

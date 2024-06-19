@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace GreenCare.API.Models;
+﻿namespace GreenCare.API.Models;
 
 public partial class Payment
 {
