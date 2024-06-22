@@ -1,7 +1,6 @@
-﻿using GreenCare.API.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
-namespace GreenCare.API.Data;
+namespace GreenCare.API.Models;
 
 public partial class GreenCareDbContext : DbContext
 {
@@ -35,11 +34,11 @@ public partial class GreenCareDbContext : DbContext
     {
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Account__3213E83FA101EC62");
+            entity.HasKey(e => e.Id).HasName("PK__Account__3213E83FFDC331C3");
 
             entity.ToTable("Account");
 
-            entity.HasIndex(e => e.Email, "UQ__Account__AB6E6164CFFC0F72").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Account__AB6E6164E5D8E3F3").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Address)
@@ -69,7 +68,7 @@ public partial class GreenCareDbContext : DbContext
 
         modelBuilder.Entity<Appointment>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Appointm__3213E83FB36790CB");
+            entity.HasKey(e => e.Id).HasName("PK__Appointm__3213E83F21AD481A");
 
             entity.ToTable("Appointment");
 
@@ -89,22 +88,22 @@ public partial class GreenCareDbContext : DbContext
             entity.HasOne(d => d.Customer).WithMany(p => p.AppointmentCustomers)
                 .HasForeignKey(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Appointme__custo__534D60F1");
+                .HasConstraintName("FK__Appointme__custo__5629CD9C");
 
             entity.HasOne(d => d.Expert).WithMany(p => p.AppointmentExperts)
                 .HasForeignKey(d => d.ExpertId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Appointme__exper__5441852A");
+                .HasConstraintName("FK__Appointme__exper__5812160E");
 
             entity.HasOne(d => d.Service).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.ServiceId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Appointme__servi__619B8048");
+                .HasConstraintName("FK__Appointme__servi__571DF1D5");
         });
 
         modelBuilder.Entity<Payment>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Payment__3213E83FE8BC8AB7");
+            entity.HasKey(e => e.Id).HasName("PK__Payment__3213E83FD3869395");
 
             entity.ToTable("Payment");
 
@@ -120,16 +119,21 @@ public partial class GreenCareDbContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("paymentMethod");
+            entity.Property(e => e.Status)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasDefaultValue("pending")
+                .HasColumnName("status");
 
             entity.HasOne(d => d.Appointment).WithMany(p => p.Payments)
                 .HasForeignKey(d => d.AppointmentId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Payment__appoint__59063A47");
+                .HasConstraintName("FK__Payment__appoint__5DCAEF64");
         });
 
         modelBuilder.Entity<PlantCareLog>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__PlantCar__3213E83F42A7C187");
+            entity.HasKey(e => e.Id).HasName("PK__PlantCar__3213E83F254392B5");
 
             entity.ToTable("PlantCareLog");
 
@@ -147,21 +151,21 @@ public partial class GreenCareDbContext : DbContext
             entity.HasOne(d => d.Appointment).WithMany(p => p.PlantCareLogs)
                 .HasForeignKey(d => d.AppointmentId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__PlantCare__appoi__6383C8BA");
+                .HasConstraintName("FK__PlantCare__appoi__66603565");
 
             entity.HasOne(d => d.Expert).WithMany(p => p.PlantCareLogs)
                 .HasForeignKey(d => d.ExpertId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__PlantCare__exper__5FB337D6");
+                .HasConstraintName("FK__PlantCare__exper__656C112C");
         });
 
         modelBuilder.Entity<PlantType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__PlantTyp__3213E83F0ED2C91C");
+            entity.HasKey(e => e.Id).HasName("PK__PlantTyp__3213E83F5BB5BABB");
 
             entity.ToTable("PlantType");
 
-            entity.HasIndex(e => e.Name, "UQ__PlantTyp__72E12F1B37359DAF").IsUnique();
+            entity.HasIndex(e => e.Name, "UQ__PlantTyp__72E12F1BDC344B37").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Name)
@@ -172,7 +176,7 @@ public partial class GreenCareDbContext : DbContext
 
         modelBuilder.Entity<Review>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Review__3213E83F397DB346");
+            entity.HasKey(e => e.Id).HasName("PK__Review__3213E83F366FB311");
 
             entity.ToTable("Review");
 
@@ -187,17 +191,17 @@ public partial class GreenCareDbContext : DbContext
             entity.HasOne(d => d.Customer).WithMany(p => p.Reviews)
                 .HasForeignKey(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Review__customer__5CD6CB2B");
+                .HasConstraintName("FK__Review__customer__60A75C0F");
 
             entity.HasOne(d => d.Service).WithMany(p => p.Reviews)
                 .HasForeignKey(d => d.ServiceId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Review__serviceI__628FA481");
+                .HasConstraintName("FK__Review__serviceI__619B8048");
         });
 
         modelBuilder.Entity<Service>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Service__3213E83FB205D515");
+            entity.HasKey(e => e.Id).HasName("PK__Service__3213E83F2529732C");
 
             entity.ToTable("Service");
 
@@ -217,12 +221,12 @@ public partial class GreenCareDbContext : DbContext
 
             entity.HasOne(d => d.Expert).WithMany(p => p.Services)
                 .HasForeignKey(d => d.ExpertId)
-                .HasConstraintName("FK__Service__expertI__5070F446");
+                .HasConstraintName("FK__Service__expertI__5165187F");
 
             entity.HasOne(d => d.PlantType).WithMany(p => p.Services)
                 .HasForeignKey(d => d.PlantTypeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Service__plantTy__6477ECF3");
+                .HasConstraintName("FK__Service__plantTy__5070F446");
         });
 
         OnModelCreatingPartial(modelBuilder);

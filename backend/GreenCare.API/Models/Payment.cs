@@ -12,5 +12,7 @@ public partial class Payment
 
     public DateTime PaymentDateTime { get; set; }
 
+    public string Status { get; set; } = null!;
+
     public virtual Appointment Appointment { get; set; } = null!;
 }

@@ -1,8 +1,4 @@
-using GreenCare.API.Data;
-using GreenCare.API.Repositories.Implementations;
-using GreenCare.API.Repositories.Interfaces;
-using GreenCare.API.Services.Implementations;
-using GreenCare.API.Services.Interfaces;
+using GreenCare.API.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace GreenCare.API
@@ -24,14 +20,6 @@ namespace GreenCare.API
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
-
-            builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-            builder.Services.AddScoped<IAccountService, AccountService>();
-            builder.Services.AddScoped<IPlantTypeRepository, PlantTypeRepository>();
-            builder.Services.AddScoped<IPlantTypeService, PlantTypeService>();
-            builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
-            builder.Services.AddScoped<IServiceService, ServiceService>();
-
 
             var app = builder.Build();
 
