@@ -1,14 +1,22 @@
-﻿namespace GreenCare.API.DTOs.Service
+using System.ComponentModel.DataAnnotations;
+
+namespace GreenCare.API.Dtos.Service
 {
     public class ServiceDto
     {
+        [Required]
         public int Id { get; set; }
-        public string Name { get; set; } = null!;
+
+        [Required]
+        public string Name { get; set; } = string.Empty;
+
+        [Required]
         public string? Description { get; set; }
+
+        [Required]
         public decimal Price { get; set; }
-        public int? PlantTypeId { get; set; }
-        public string? PlantTypeName { get; set; }
-        public int? ExpertId { get; set; }
-        public string? ExpertName { get; set; }
+
+        [Required]
+        public int Duration { get; set; }
     }
 }

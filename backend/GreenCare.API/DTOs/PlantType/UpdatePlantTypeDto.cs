@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace GreenCare.API.DTOs.PlantType
+namespace GreenCare.API.Dtos.PlantType
 {
     public class UpdatePlantTypeDto
     {
         [Required]
-        public string Name { get; set; } = null!;
+        public string Name { get; set; } = string.Empty;
     }
 }

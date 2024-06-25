@@ -1,18 +1,25 @@
-﻿namespace GreenCare.API.Models;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-public partial class Payment
+namespace GreenCare.API.Models
 {
-    public int Id { get; set; }
+    public class Payment
+    {
+        public int Id { get; set; }
 
-    public int AppointmentId { get; set; }
+        public int AppointmentId { get; set; }
 
-    public decimal Amount { get; set; }
+        [Required]
+        [Column(TypeName = "decimal(10, 2)")]
+        public decimal Amount { get; set; }
 
-    public string PaymentMethod { get; set; } = null!;
+        public string PaymentMethod { get; set; } = string.Empty;
 
-    public DateTime PaymentDateTime { get; set; }
+        public DateTime PaymentDateTime { get; set; }
 
-    public string Status { get; set; } = null!;
+        [Required]
+        public string Status { get; set; } = "pending";
 
-    public virtual Appointment Appointment { get; set; } = null!;
+        public virtual Appointment Appointment { get; set; } = null!;
+    }
 }

@@ -1,10 +1,14 @@
-﻿namespace GreenCare.API.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
-public partial class PlantType
+namespace GreenCare.API.Models
 {
-    public int Id { get; set; }
+    public class PlantType
+    {
+        public int Id { get; set; }
 
-    public string Name { get; set; } = null!;
+        [Column(TypeName = "nvarchar(150)")]
+        public string Name { get; set; } = string.Empty;
 
-    public virtual ICollection<Service> Services { get; set; } = new List<Service>();
+        public List<PlantTypeService> PlantTypeServices { get; set; } = new List<PlantTypeService>();
+    }
 }

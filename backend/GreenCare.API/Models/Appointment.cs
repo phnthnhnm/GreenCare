@@ -1,26 +1,27 @@
-﻿namespace GreenCare.API.Models;
-
-public partial class Appointment
+namespace GreenCare.API.Models
 {
-    public int Id { get; set; }
+    public class Appointment
+    {
+        public int Id { get; set; }
 
-    public int CustomerId { get; set; }
+        public int CustomerId { get; set; }
 
-    public int ServiceId { get; set; }
+        public int ServiceId { get; set; }
 
-    public int ExpertId { get; set; }
+        public int ExpertId { get; set; }
 
-    public DateTime AppointmentDateTime { get; set; }
+        public DateTime AppointmentDateTime { get; set; }
 
-    public string Status { get; set; } = null!;
+        public string Status { get; set; } = null!;
 
-    public virtual Account Customer { get; set; } = null!;
+        public virtual ApplicationUser Customer { get; set; } = null!;
 
-    public virtual Account Expert { get; set; } = null!;
+        public virtual ApplicationUser Expert { get; set; } = null!;
 
-    public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
+        public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
-    public virtual ICollection<PlantCareLog> PlantCareLogs { get; set; } = new List<PlantCareLog>();
+        public virtual ICollection<PlantCareLog> PlantCareLogs { get; set; } = new List<PlantCareLog>();
 
-    public virtual Service Service { get; set; } = null!;
+        public virtual Service Service { get; set; } = null!;
+    }
 }
