@@ -20,6 +20,7 @@ namespace api.Data
         public virtual DbSet<Appointment> Appointments { get; set; }
         public virtual DbSet<Payment> Payments { get; set; }
         public virtual DbSet<Review> Reviews { get; set; }
+        public virtual DbSet<PlantCareLog> PlantCareLogs { get; set; }
         public virtual DbSet<PlantTypeService> PlantTypeServices { get; set; }
         public virtual DbSet<ExpertService> ExpertServices { get; set; }
         public virtual DbSet<AppointmentService> AppointmentServices { get; set; }
@@ -100,6 +101,18 @@ namespace api.Data
                 .WithMany(s => s.Reviews)
                 .HasForeignKey(r => r.ServiceId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<PlantCareLog>()
+                .HasOne(pcl => pcl.Expert)
+                .WithMany(u => u.ExpertLogs)
+                .HasForeignKey(pcl => pcl.ExpertId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<PlantCareLog>()
+                .HasOne(pcl => pcl.Appointment)
+                .WithOne(a => a.PlantCareLog)
+                .HasForeignKey<PlantCareLog>(pcl => pcl.AppointmentId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             List<IdentityRole> roles = new List<IdentityRole>
             {

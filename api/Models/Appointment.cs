@@ -21,6 +21,7 @@ namespace api.Models
         public string Status { get; set; } = null!;
 
         public Payment? Payment { get; set; }
+        public virtual PlantCareLog? PlantCareLog { get; set; }
         public List<AppointmentService> AppointmentServices { get; set; } = new List<AppointmentService>();
     }
 }
