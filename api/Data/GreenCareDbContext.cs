@@ -18,6 +18,7 @@ namespace api.Data
         public virtual DbSet<PlantType> PlantTypes { get; set; }
         public virtual DbSet<Service> Services { get; set; }
         public virtual DbSet<PlantTypeService> PlantTypeServices { get; set; }
+        public virtual DbSet<ExpertService> ExpertServices { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -35,6 +36,18 @@ namespace api.Data
                 .HasOne(ps => ps.Service)
                 .WithMany(s => s.PlantTypeServices)
                 .HasForeignKey(ps => ps.ServiceId);
+
+            builder.Entity<ExpertService>().HasKey(es => new { es.ExpertId, es.ServiceId });
+
+            builder.Entity<ExpertService>()
+                .HasOne(es => es.Expert)
+                .WithMany(e => e.ExpertServices)
+                .HasForeignKey(es => es.ExpertId);
+
+            builder.Entity<ExpertService>()
+                .HasOne(es => es.Service)
+                .WithMany(s => s.ExpertServices)
+                .HasForeignKey(es => es.ServiceId);
 
             List<IdentityRole> roles = new List<IdentityRole>
             {
