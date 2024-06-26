@@ -39,5 +39,23 @@ namespace api.Repositories
                 .Select(es => es.Expert)
                 .ToListAsync();
         }
+
+        public async Task CreateAsync(ExpertService expertService)
+        {
+            if (expertService == null)
+            {
+                throw new ArgumentNullException(nameof(expertService));
+            }
+
+            if (await _context.ExpertServices.AnyAsync(pts =>
+                pts.ExpertId == expertService.ExpertId &&
+                pts.ServiceId == expertService.ServiceId))
+            {
+                throw new InvalidOperationException("This association already exists");
+            }
+
+            await _context.ExpertServices.AddAsync(expertService);
+            await _context.SaveChangesAsync();
+        }
     }
 }

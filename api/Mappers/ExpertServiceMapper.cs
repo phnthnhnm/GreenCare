@@ -17,5 +17,15 @@ namespace api.Mappers
                 ServiceId = expertService.ServiceId
             };
         }
+
+        public static ExpertService ToExpertServiceFromCreateDto(this CreateExpertServiceDto createDto)
+        {
+            return new ExpertService
+            {
+                ExpertId = createDto.ExpertId,
+                ServiceId = createDto.ServiceId
+            };
+
+        }
     }
 }

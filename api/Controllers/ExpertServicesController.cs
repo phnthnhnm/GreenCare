@@ -1,3 +1,4 @@
+using api.Dtos.ExpertServices;
 using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
@@ -48,6 +49,20 @@ namespace api.Controllers
             var expertDtos = experts.Select(e => e.ToAccountDto());
 
             return Ok(expertDtos);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateExpertServiceDto createDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var expertService = createDto.ToExpertServiceFromCreateDto();
+            await _expertServiceRepo.CreateAsync(expertService);
+
+            return Ok();
         }
     }
 }
