@@ -4,6 +4,7 @@ namespace api.Interfaces
 {
     public interface IExpertServicesRepository
     {
-        Task<List<Service>> GetExpertServicesAsync(ApplicationUser user);
+        Task<List<ExpertService>> GetAllAsync();
+        Task<List<Service>> GetServicesByExpertAsync(ApplicationUser user);
     }
 }

@@ -19,13 +19,23 @@ namespace api.Controllers
             _accountsRepo = accountsRepo;
         }
 
+
+        [HttpGet("get-all")]
+        public async Task<IActionResult> GetAll()
+        {
+            var expertServices = await _expertServiceRepo.GetAllAsync();
+            var expertServicesDto = expertServices.Select(es => es.ToExpertServiceDto());
+
+            return Ok(expertServicesDto);
+        }
+
         [HttpGet]
         [Authorize(Roles = "Expert")]
         public async Task<IActionResult> GetExpertServices()
         {
             var userEmail = User.GetUserEmail();
             var user = await _accountsRepo.GetUserByEmailAsync(userEmail);
-            var expertServices = await _expertServiceRepo.GetExpertServicesAsync(user);
+            var expertServices = await _expertServiceRepo.GetServicesByExpertAsync(user);
             var expertServicesDto = expertServices.Select(es => es.ToServiceDto());
 
             return Ok(expertServicesDto);

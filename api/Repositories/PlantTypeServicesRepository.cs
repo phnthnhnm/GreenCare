@@ -8,14 +8,10 @@ namespace api.Repositories
     public class PlantTypeServicesRepository : IPlantTypeServicesRepository
     {
         private readonly GreenCareDbContext _context;
-        private readonly IPlantTypesRepository _plantTypeRepo;
-        private readonly IServicesRepository _serviceRepo;
 
-        public PlantTypeServicesRepository(GreenCareDbContext context, IPlantTypesRepository plantTypeRepo, IServicesRepository serviceRepo)
+        public PlantTypeServicesRepository(GreenCareDbContext context)
         {
             _context = context;
-            _plantTypeRepo = plantTypeRepo;
-            _serviceRepo = serviceRepo;
         }
 
         public async Task<List<PlantTypeService>> GetAllAsync()

@@ -14,7 +14,12 @@ namespace api.Repositories
             _context = context;
         }
 
-        public async Task<List<Service>> GetExpertServicesAsync(ApplicationUser user)
+        public async Task<List<ExpertService>> GetAllAsync()
+        {
+            return await _context.ExpertServices.ToListAsync();
+        }
+
+        public async Task<List<Service>> GetServicesByExpertAsync(ApplicationUser user)
         {
             if (user == null)
             {
