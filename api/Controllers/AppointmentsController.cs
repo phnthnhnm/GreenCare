@@ -42,6 +42,24 @@ namespace api.Controllers
             return Ok(appointment.ToAppointmentDto());
         }
 
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetByUserId(string userId)
+        {
+            var appointments = await _appointmentsRepo.GetAppointmentsByUserIdAsync(userId);
+            var appointmentDtos = appointments.Select(a => a.ToAppointmentDto());
+
+            return Ok(appointmentDtos);
+        }
+
+        [HttpGet("expert/{expertId}")]
+        public async Task<IActionResult> GetByExpertId(string expertId)
+        {
+            var appointments = await _appointmentsRepo.GetAppointmentsByExpertIdAsync(expertId);
+            var appointmentDtos = appointments.Select(a => a.ToAppointmentDto());
+
+            return Ok(appointmentDtos);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateAppointmentDto appointmentDto)
         {

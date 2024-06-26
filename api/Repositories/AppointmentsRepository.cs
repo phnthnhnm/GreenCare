@@ -69,5 +69,15 @@ namespace api.Repositories
 
             return appointment;
         }
+
+        public async Task<List<Appointment>> GetAppointmentsByUserIdAsync(string userId)
+        {
+            return await _context.Appointments.Where(a => a.UserId == userId).ToListAsync();
+        }
+
+        public async Task<List<Appointment>> GetAppointmentsByExpertIdAsync(string expertId)
+        {
+            return await _context.Appointments.Where(a => a.ExpertId == expertId).ToListAsync();
+        }
     }
 }
