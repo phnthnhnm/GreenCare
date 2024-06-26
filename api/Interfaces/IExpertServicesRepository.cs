@@ -6,5 +6,6 @@ namespace api.Interfaces
     {
         Task<List<ExpertService>> GetAllAsync();
         Task<List<Service>> GetServicesByExpertAsync(ApplicationUser user);
+        Task<List<ApplicationUser>> GetExpertsByServiceAsync(int serviceId);
     }
 }

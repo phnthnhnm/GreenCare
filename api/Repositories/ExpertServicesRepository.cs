@@ -31,5 +31,13 @@ namespace api.Repositories
                 .Select(es => es.Service)
                 .ToListAsync();
         }
+
+        public async Task<List<ApplicationUser>> GetExpertsByServiceAsync(int serviceId)
+        {
+            return await _context.ExpertServices
+                .Where(es => es.ServiceId == serviceId)
+                .Select(es => es.Expert)
+                .ToListAsync();
+        }
     }
 }

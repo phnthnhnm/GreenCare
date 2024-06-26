@@ -40,5 +40,14 @@ namespace api.Controllers
 
             return Ok(expertServicesDto);
         }
+
+        [HttpGet("{serviceId}/experts")]
+        public async Task<IActionResult> GetExpertsByServiceId(int serviceId)
+        {
+            var experts = await _expertServiceRepo.GetExpertsByServiceAsync(serviceId);
+            var expertDtos = experts.Select(e => e.ToAccountDto());
+
+            return Ok(expertDtos);
+        }
     }
 }
