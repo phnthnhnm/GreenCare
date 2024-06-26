@@ -18,6 +18,7 @@ namespace api.Data
         public virtual DbSet<PlantType> PlantTypes { get; set; }
         public virtual DbSet<Service> Services { get; set; }
         public virtual DbSet<Appointment> Appointments { get; set; }
+        public virtual DbSet<Payment> Payments { get; set; }
         public virtual DbSet<PlantTypeService> PlantTypeServices { get; set; }
         public virtual DbSet<ExpertService> ExpertServices { get; set; }
         public virtual DbSet<AppointmentService> AppointmentServices { get; set; }
@@ -74,6 +75,12 @@ namespace api.Data
                 .WithMany(u => u.ExpertAppointments)
                 .HasForeignKey(a => a.ExpertId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Payment>()
+                .HasOne(p => p.Appointment)
+                .WithOne(a => a.Payment)
+                .HasForeignKey<Payment>(p => p.AppointmentId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             List<IdentityRole> roles = new List<IdentityRole>
             {
