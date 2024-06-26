@@ -2,6 +2,7 @@ using api.Dtos.Account;
 using api.Interfaces;
 using api.Models;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace api.Repositories
 {
@@ -43,7 +44,7 @@ namespace api.Repositories
                 }
             }
 
-            var token = _tokenService.CreateToken(user);
+            var token = await _tokenService.CreateToken(user);
             return new LoginResultDto { IsSuccessful = true, Email = user.Email, Token = token };
         }
 
@@ -62,8 +63,12 @@ namespace api.Repositories
             {
                 return new RegisterResultDto { IsSuccessful = false, Errors = result.Errors.Select(e => e.Description) };
             }
-
-            var token = _tokenService.CreateToken(user);
+            var roleResult = await _userManager.AddToRoleAsync(user, "User");
+            if (!roleResult.Succeeded)
+            {
+                return new RegisterResultDto { IsSuccessful = false, Errors = roleResult.Errors.Select(e => e.Description) };
+            }
+            var token = await _tokenService.CreateToken(user);
             return new RegisterResultDto { IsSuccessful = true, Email = user.Email, Token = token };
         }
 
@@ -89,7 +94,28 @@ namespace api.Repositories
             }
 
             var addResult = await _userManager.AddToRoleAsync(user, role);
-            return addResult;
+            if (!addResult.Succeeded)
+            {
+                return addResult;
+            }
+
+            // Remove old role claims
+            var claims = await _userManager.GetClaimsAsync(user);
+            var roleClaims = claims.Where(c => c.Type == ClaimTypes.Role).ToList();
+            foreach (var claim in roleClaims)
+            {
+                await _userManager.RemoveClaimAsync(user, claim);
+            }
+
+            // Add new role claim
+            await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, role));
+
+            return IdentityResult.Success;
+        }
+
+        public async Task<ApplicationUser> GetUserByEmailAsync(string email)
+        {
+            return await _userManager.FindByEmailAsync(email);
         }
 
     }

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories
 {
-    public class PlantTypeServicesRepository : IPlantTypeServiceRepository
+    public class PlantTypeServicesRepository : IPlantTypeServicesRepository
     {
         private readonly GreenCareDbContext _context;
         private readonly IPlantTypesRepository _plantTypeRepo;

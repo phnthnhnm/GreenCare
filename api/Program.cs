@@ -1,8 +1,8 @@
 using api.Data;
+using api.Helpers;
 using api.Interfaces;
 using api.Models;
 using api.Repositories;
-using api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -85,7 +85,8 @@ builder.Services.AddScoped<IAccountsRepository, AccountsRepository>();
 builder.Services.AddScoped<IPlantTypesRepository, PlantTypesRepository>();
 builder.Services.AddScoped<IServicesRepository, ServicesRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IPlantTypeServiceRepository, PlantTypeServicesRepository>();
+builder.Services.AddScoped<IPlantTypeServicesRepository, PlantTypeServicesRepository>();
+builder.Services.AddScoped<IExpertServicesRepository, ExpertServicesRepository>();
 
 var app = builder.Build();
 
