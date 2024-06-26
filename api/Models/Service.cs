@@ -19,6 +19,7 @@ namespace api.Models
 
         public List<PlantTypeService> PlantTypeServices { get; set; } = new List<PlantTypeService>();
         public List<ExpertService> ExpertServices { get; set; } = new List<ExpertService>();
+        public List<AppointmentService> AppointmentServices { get; set; } = new List<AppointmentService>();
 
         // public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 

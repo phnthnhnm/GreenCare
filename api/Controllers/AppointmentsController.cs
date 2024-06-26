@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/appointments")]
     public class AppointmentsController : ControllerBase
     {
         private readonly IAppointmentsRepository _appointmentsRepo;

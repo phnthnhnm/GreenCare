@@ -19,5 +19,7 @@ namespace api.Models
 
         [EnumDataType(typeof(AppointmentStatus))]
         public string Status { get; set; } = null!;
+
+        public List<AppointmentService> AppointmentServices { get; set; } = new List<AppointmentService>();
     }
 }

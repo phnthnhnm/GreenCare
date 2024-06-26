@@ -94,6 +94,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPlantTypeServicesRepository, PlantTypeServicesRepository>();
 builder.Services.AddScoped<IExpertServicesRepository, ExpertServicesRepository>();
 builder.Services.AddScoped<IAppointmentsRepository, AppointmentsRepository>();
+builder.Services.AddScoped<IAppointmentServicesRepository, AppointmentServicesRepository>();
 
 var app = builder.Build();
 

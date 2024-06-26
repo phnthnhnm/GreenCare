@@ -20,6 +20,7 @@ namespace api.Data
         public virtual DbSet<Appointment> Appointments { get; set; }
         public virtual DbSet<PlantTypeService> PlantTypeServices { get; set; }
         public virtual DbSet<ExpertService> ExpertServices { get; set; }
+        public virtual DbSet<AppointmentService> AppointmentServices { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -49,6 +50,18 @@ namespace api.Data
                 .HasOne(es => es.Service)
                 .WithMany(s => s.ExpertServices)
                 .HasForeignKey(es => es.ServiceId);
+
+            builder.Entity<AppointmentService>().HasKey(aps => new { aps.AppointmentId, aps.ServiceId });
+
+            builder.Entity<AppointmentService>()
+                .HasOne(aps => aps.Appointment)
+                .WithMany(a => a.AppointmentServices)
+                .HasForeignKey(aps => aps.AppointmentId);
+
+            builder.Entity<AppointmentService>()
+                .HasOne(aps => aps.Service)
+                .WithMany(s => s.AppointmentServices)
+                .HasForeignKey(aps => aps.ServiceId);
 
             builder.Entity<Appointment>()
                 .HasOne(a => a.User)
