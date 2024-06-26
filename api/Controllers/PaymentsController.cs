@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/payments")]
     public class PaymentsController : ControllerBase
     {
         private readonly IPaymentsRepository _paymentsRepo;

@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Data;
 
 #nullable disable
 
-namespace GreenCare.API.Data.Migrations
+namespace api.Data.Migrations
 {
     [DbContext(typeof(GreenCareDbContext))]
-    partial class GreenCareDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240626092608_AddReview")]
+    partial class AddReview
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,19 +54,19 @@ namespace GreenCare.API.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5bb026b4-b3e1-49e9-9ef5-5aaf7142e3c1",
+                            Id = "d1af400e-66b1-4436-b3b2-af5e243c7635",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "071cd58d-668b-40ca-bdc7-e6f5e691ce7c",
+                            Id = "f6e65785-dcf3-498e-bc2e-e921bd895133",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "3d181f6c-0c95-4f91-a9d8-d887fdf04690",
+                            Id = "0890ec53-13dc-4559-8b52-2d5a41dcc4af",
                             Name = "Expert",
                             NormalizedName = "EXPERT"
                         });

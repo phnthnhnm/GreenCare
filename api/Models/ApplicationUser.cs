@@ -19,12 +19,8 @@ namespace api.Models
         public ICollection<Appointment> UserAppointments { get; set; } = new List<Appointment>();
         public ICollection<Appointment> ExpertAppointments { get; set; } = new List<Appointment>();
 
-        // public virtual ICollection<Appointment> ExpertAppointments { get; set; } = new List<Appointment>();
-
         // public virtual ICollection<PlantCareLog> PlantCareLogs { get; set; } = new List<PlantCareLog>();
 
-        // public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
-
-        // public virtual ICollection<Service> Services { get; set; } = new List<Service>();
+        public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
     }
 }

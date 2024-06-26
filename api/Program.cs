@@ -96,6 +96,7 @@ builder.Services.AddScoped<IExpertServicesRepository, ExpertServicesRepository>(
 builder.Services.AddScoped<IAppointmentsRepository, AppointmentsRepository>();
 builder.Services.AddScoped<IAppointmentServicesRepository, AppointmentServicesRepository>();
 builder.Services.AddScoped<IPaymentsRepository, PaymentsRepository>();
+builder.Services.AddScoped<IReviewsRepository, ReviewsRepository>();
 
 var app = builder.Build();
 
