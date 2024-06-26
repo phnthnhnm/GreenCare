@@ -57,5 +57,18 @@ namespace api.Repositories
             await _context.ExpertServices.AddAsync(expertService);
             await _context.SaveChangesAsync();
         }
+
+        public async Task DeleteAsync(string expertId, int serviceId)
+        {
+            var expertService = await _context.ExpertServices.FindAsync(expertId, serviceId);
+
+            if (expertService == null)
+            {
+                throw new InvalidOperationException("This association does not exist");
+            }
+
+            _context.ExpertServices.Remove(expertService);
+            await _context.SaveChangesAsync();
+        }
     }
 }

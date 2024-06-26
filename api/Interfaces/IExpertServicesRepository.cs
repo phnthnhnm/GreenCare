@@ -8,5 +8,6 @@ namespace api.Interfaces
         Task<List<Service>> GetServicesByExpertAsync(ApplicationUser user);
         Task<List<ApplicationUser>> GetExpertsByServiceAsync(int serviceId);
         Task CreateAsync(ExpertService expertService);
+        Task DeleteAsync(string expertId, int serviceId);
     }
 }

@@ -64,5 +64,13 @@ namespace api.Controllers
 
             return Ok();
         }
+
+        [HttpDelete("{expertId}/{serviceId}")]
+        public async Task<IActionResult> Delete(string expertId, int serviceId)
+        {
+            await _expertServiceRepo.DeleteAsync(expertId, serviceId);
+
+            return Ok();
+        }
     }
 }
