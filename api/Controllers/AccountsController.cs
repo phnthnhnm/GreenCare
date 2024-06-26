@@ -70,27 +70,19 @@ namespace api.Controllers
             }
         }
 
-        // [HttpPost("change-role")]
-        // public async Task<IActionResult> ChangeUserRole(string userId, string newRole)
-        // {
-        //     var user = await _userManager.FindByIdAsync(userId);
-        //     if (user == null)
-        //     {
-        //         return NotFound("User not found");
-        //     }
+        [HttpPut("{id}/change-role")]
+        public async Task<IActionResult> ChangeRole([FromRoute] string id, string role)
+        {
+            var result = await _accountsRepo.ChangeRoleAsync(id, role);
 
-        //     var currentRoles = await _userManager.GetRolesAsync(user);
-        //     await _userManager.RemoveFromRolesAsync(user, currentRoles);
-
-        //     var result = await _userManager.AddToRoleAsync(user, newRole);
-        //     if (result.Succeeded)
-        //     {
-        //         return Ok($"User role updated to {newRole}");
-        //     }
-        //     else
-        //     {
-        //         return BadRequest("Failed to update user role");
-        //     }
-        // }
+            if (result.Succeeded)
+            {
+                return Ok(new { message = $"Role updated to {role} successfully." });
+            }
+            else
+            {
+                return BadRequest(result.Errors);
+            }
+        }
     }
 }

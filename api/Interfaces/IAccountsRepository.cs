@@ -7,5 +7,6 @@ namespace api.Interfaces
     {
         Task<RegisterResultDto> RegisterAsync(RegisterDto registerDto);
         Task<LoginResultDto> LoginAsync(LoginDto loginDto);
+        Task<IdentityResult> ChangeRoleAsync(string id, string role);
     }
 }
