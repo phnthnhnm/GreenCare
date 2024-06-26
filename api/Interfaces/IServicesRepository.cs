@@ -3,7 +3,7 @@ using api.Models;
 
 namespace api.Interfaces
 {
-    public interface IServiceRepository
+    public interface IServicesRepository
     {
         Task<List<Service>> GetAllAsync();
         Task<Service?> GetByIdAsync(int id);

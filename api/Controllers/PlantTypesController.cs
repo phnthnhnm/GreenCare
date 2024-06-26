@@ -10,9 +10,9 @@ namespace api.Controllers
     [Route("api/plant-types")]
     public class PlantTypesController : ControllerBase
     {
-        private readonly IPlantTypeRepository _plantTypeRepo;
+        private readonly IPlantTypesRepository _plantTypeRepo;
 
-        public PlantTypesController(IPlantTypeRepository plantTypeRepo)
+        public PlantTypesController(IPlantTypesRepository plantTypeRepo)
         {
             _plantTypeRepo = plantTypeRepo;
         }

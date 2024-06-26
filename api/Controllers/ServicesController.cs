@@ -9,9 +9,9 @@ namespace api.Controllers
     [Route("api/services")]
     public class ServicesController : ControllerBase
     {
-        private readonly IServiceRepository _serviceRepo;
+        private readonly IServicesRepository _serviceRepo;
 
-        public ServicesController(IServiceRepository serviceRepo)
+        public ServicesController(IServicesRepository serviceRepo)
         {
             _serviceRepo = serviceRepo;
         }

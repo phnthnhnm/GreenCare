@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories
 {
-    public class PlantTypeServiceRepository : IPlantTypeServiceRepository
+    public class PlantTypeServicesRepository : IPlantTypeServiceRepository
     {
         private readonly GreenCareDbContext _context;
-        private readonly IPlantTypeRepository _plantTypeRepo;
-        private readonly IServiceRepository _serviceRepo;
+        private readonly IPlantTypesRepository _plantTypeRepo;
+        private readonly IServicesRepository _serviceRepo;
 
-        public PlantTypeServiceRepository(GreenCareDbContext context, IPlantTypeRepository plantTypeRepo, IServiceRepository serviceRepo)
+        public PlantTypeServicesRepository(GreenCareDbContext context, IPlantTypesRepository plantTypeRepo, IServicesRepository serviceRepo)
         {
             _context = context;
             _plantTypeRepo = plantTypeRepo;

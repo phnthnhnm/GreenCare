@@ -4,7 +4,7 @@ using api.Models;
 
 namespace api.Interfaces
 {
-    public interface IPlantTypeRepository
+    public interface IPlantTypesRepository
     {
         Task<List<PlantType>> GetAllAsync(PlantTypeQuery query);
         Task<PlantType?> GetByIdAsync(int id);

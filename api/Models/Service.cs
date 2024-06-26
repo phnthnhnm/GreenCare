@@ -19,12 +19,6 @@ namespace api.Models
 
         public List<PlantTypeService> PlantTypeServices { get; set; } = new List<PlantTypeService>();
 
-        // [Required]
-        // public int PlantTypeId { get; set; }
-
-        // [Required]
-        // public int? ExpertId { get; set; }
-
         // public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
         // public virtual ApplicationUser? Expert { get; set; }

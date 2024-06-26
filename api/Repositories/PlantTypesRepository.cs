@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories
 {
-    public class PlantTypeRepository : IPlantTypeRepository
+    public class PlantTypesRepository : IPlantTypesRepository
     {
         private readonly GreenCareDbContext _context;
 
-        public PlantTypeRepository(GreenCareDbContext context)
+        public PlantTypesRepository(GreenCareDbContext context)
         {
             _context = context;
         }

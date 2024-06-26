@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories
 {
-    public class ServiceRepository : IServiceRepository
+    public class ServicesRepository : IServicesRepository
     {
         private readonly GreenCareDbContext _context;
 
-        public ServiceRepository(GreenCareDbContext context)
+        public ServicesRepository(GreenCareDbContext context)
         {
             _context = context;
         }

@@ -79,10 +79,13 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddScoped<IPlantTypeRepository, PlantTypeRepository>();
-builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
+builder.Services.AddAuthorization();
+
+builder.Services.AddScoped<IAccountsRepository, AccountsRepository>();
+builder.Services.AddScoped<IPlantTypesRepository, PlantTypesRepository>();
+builder.Services.AddScoped<IServicesRepository, ServicesRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IPlantTypeServiceRepository, PlantTypeServiceRepository>();
+builder.Services.AddScoped<IPlantTypeServiceRepository, PlantTypeServicesRepository>();
 
 var app = builder.Build();
 

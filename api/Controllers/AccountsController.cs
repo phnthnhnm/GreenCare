@@ -1,7 +1,5 @@
 using api.Dtos.Account;
 using api.Interfaces;
-using api.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -10,15 +8,11 @@ namespace api.Controllers
     [Route("api/account")]
     public class AccountsController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ITokenService _tokenService;
-        private readonly SignInManager<ApplicationUser> _signinManager;
+        private readonly IAccountsRepository _accountsRepo;
 
-        public AccountsController(UserManager<ApplicationUser> userManager, ITokenService tokenService, SignInManager<ApplicationUser> signInManager)
+        public AccountsController(IAccountsRepository accountsRepo)
         {
-            _userManager = userManager;
-            _tokenService = tokenService;
-            _signinManager = signInManager;
+            _accountsRepo = accountsRepo;
         }
 
         [HttpPost("register")]
@@ -31,35 +25,15 @@ namespace api.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var user = new ApplicationUser
-                {
-                    UserName = Guid.NewGuid().ToString(),
-                    Email = registerDto.Email
-                };
+                var result = await _accountsRepo.RegisterAsync(registerDto);
 
-                var createdUser = await _userManager.CreateAsync(user, registerDto.Password);
-
-                if (createdUser.Succeeded)
+                if (result.IsSuccessful)
                 {
-                    var role = await _userManager.AddToRoleAsync(user, "User");
-                    if (role.Succeeded)
-                    {
-                        return Ok(
-                            new NewUserDto
-                            {
-                                Email = user.Email,
-                                Token = _tokenService.CreateToken(user)
-                            }
-                        );
-                    }
-                    else
-                    {
-                        return BadRequest(role.Errors);
-                    }
+                    return Ok(result);
                 }
                 else
                 {
-                    return BadRequest(createdUser.Errors);
+                    return BadRequest(result.Errors);
                 }
             }
             catch (Exception e)
@@ -67,6 +41,7 @@ namespace api.Controllers
                 return BadRequest(e.Message);
             }
         }
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
@@ -78,28 +53,15 @@ namespace api.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var user = await _userManager.FindByEmailAsync(loginDto.Email);
+                var result = await _accountsRepo.LoginAsync(loginDto);
 
-                if (user == null)
+                if (result.IsSuccessful)
                 {
-                    return Unauthorized("Invalid email or password");
-                }
-
-                var result = await _signinManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
-
-                if (result.Succeeded)
-                {
-                    return Ok(
-                        new NewUserDto
-                        {
-                            Email = user.Email,
-                            Token = _tokenService.CreateToken(user)
-                        }
-                    );
+                    return Ok(result);
                 }
                 else
                 {
-                    return Unauthorized("Invalid email or password");
+                    return Unauthorized(result.ErrorMessage);
                 }
             }
             catch (Exception e)
@@ -107,5 +69,28 @@ namespace api.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        // [HttpPost("change-role")]
+        // public async Task<IActionResult> ChangeUserRole(string userId, string newRole)
+        // {
+        //     var user = await _userManager.FindByIdAsync(userId);
+        //     if (user == null)
+        //     {
+        //         return NotFound("User not found");
+        //     }
+
+        //     var currentRoles = await _userManager.GetRolesAsync(user);
+        //     await _userManager.RemoveFromRolesAsync(user, currentRoles);
+
+        //     var result = await _userManager.AddToRoleAsync(user, newRole);
+        //     if (result.Succeeded)
+        //     {
+        //         return Ok($"User role updated to {newRole}");
+        //     }
+        //     else
+        //     {
+        //         return BadRequest("Failed to update user role");
+        //     }
+        // }
     }
 }
