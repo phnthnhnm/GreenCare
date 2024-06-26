@@ -17,7 +17,8 @@ namespace api.Mappers
                 UserId = appointmentModel.UserId,
                 ExpertId = appointmentModel.ExpertId,
                 DateTime = appointmentModel.DateTime,
-                Status = appointmentModel.Status
+                Status = appointmentModel.Status,
+                Payment = appointmentModel.Payment?.ToPaymentDto()
             };
         }
 

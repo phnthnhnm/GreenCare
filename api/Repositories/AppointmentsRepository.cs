@@ -21,12 +21,12 @@ namespace api.Repositories
 
         public async Task<List<Appointment>> GetAllAsync()
         {
-            return await _context.Appointments.ToListAsync();
+            return await _context.Appointments.Include(a => a.Payment).ToListAsync();
         }
 
         public async Task<Appointment?> GetByIdAsync(int id)
         {
-            return await _context.Appointments.FirstOrDefaultAsync(a => a.Id == id);
+            return await _context.Appointments.Include(a => a.Payment).FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<Appointment> CreateAsync(Appointment appointment)
@@ -72,12 +72,12 @@ namespace api.Repositories
 
         public async Task<List<Appointment>> GetAppointmentsByUserIdAsync(string userId)
         {
-            return await _context.Appointments.Where(a => a.UserId == userId).ToListAsync();
+            return await _context.Appointments.Where(a => a.UserId == userId).Include(a => a.Payment).ToListAsync();
         }
 
         public async Task<List<Appointment>> GetAppointmentsByExpertIdAsync(string expertId)
         {
-            return await _context.Appointments.Where(a => a.ExpertId == expertId).ToListAsync();
+            return await _context.Appointments.Where(a => a.ExpertId == expertId).Include(a => a.Payment).ToListAsync();
         }
     }
 }

@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using api.Dtos.Payment;
 using api.Helpers;
 
 namespace api.Dtos.Appointment
@@ -15,5 +16,6 @@ namespace api.Dtos.Appointment
 
         [EnumDataType(typeof(AppointmentStatus))]
         public string Status { get; set; } = null!;
+        public PaymentDto? Payment { get; set; }
     }
 }
