@@ -17,6 +17,7 @@ namespace api.Data
 
         public virtual DbSet<PlantType> PlantTypes { get; set; }
         public virtual DbSet<Service> Services { get; set; }
+        public virtual DbSet<Appointment> Appointments { get; set; }
         public virtual DbSet<PlantTypeService> PlantTypeServices { get; set; }
         public virtual DbSet<ExpertService> ExpertServices { get; set; }
 
@@ -48,6 +49,18 @@ namespace api.Data
                 .HasOne(es => es.Service)
                 .WithMany(s => s.ExpertServices)
                 .HasForeignKey(es => es.ServiceId);
+
+            builder.Entity<Appointment>()
+                .HasOne(a => a.User)
+                .WithMany(u => u.UserAppointments)
+                .HasForeignKey(a => a.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Appointment>()
+                .HasOne(a => a.Expert)
+                .WithMany(u => u.ExpertAppointments)
+                .HasForeignKey(a => a.ExpertId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             List<IdentityRole> roles = new List<IdentityRole>
             {

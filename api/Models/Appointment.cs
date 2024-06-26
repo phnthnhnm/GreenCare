@@ -1,27 +1,23 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using api.Helpers;
+
 namespace api.Models
 {
     public class Appointment
     {
         public int Id { get; set; }
 
-        public int CustomerId { get; set; }
+        public string UserId { get; set; }
+        public ApplicationUser User { get; set; } = null!;
 
-        public int ServiceId { get; set; }
-
-        public int ExpertId { get; set; }
-
-        public DateTime AppointmentDateTime { get; set; }
-
-        public string Status { get; set; } = null!;
-
-        public virtual ApplicationUser Customer { get; set; } = null!;
-
+        public string ExpertId { get; set; }
         public virtual ApplicationUser Expert { get; set; } = null!;
 
-        public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
+        [Column(TypeName = "datetime")]
+        public DateTime DateTime { get; set; }
 
-        public virtual ICollection<PlantCareLog> PlantCareLogs { get; set; } = new List<PlantCareLog>();
-
-        public virtual Service Service { get; set; } = null!;
+        [EnumDataType(typeof(AppointmentStatus))]
+        public string Status { get; set; } = null!;
     }
 }

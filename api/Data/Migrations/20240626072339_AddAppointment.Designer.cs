@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Data;
 
 #nullable disable
 
-namespace GreenCare.API.Data.Migrations
+namespace api.Data.Migrations
 {
     [DbContext(typeof(GreenCareDbContext))]
-    partial class GreenCareDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240626072339_AddAppointment")]
+    partial class AddAppointment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,19 +54,19 @@ namespace GreenCare.API.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "76c5f7f5-608e-45ab-8224-c79b7c32fa7d",
+                            Id = "23359a62-3c30-46c8-bec1-d0fdbefab63a",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "ccd2fd30-da03-4088-ab3a-f5c05988a2b0",
+                            Id = "443baa78-5249-4535-83f9-fbf4bd89912a",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "a9305c88-65bf-4e33-b56f-305de8cc1b97",
+                            Id = "c38bb702-c443-4030-be33-7884ab7eccb3",
                             Name = "Expert",
                             NormalizedName = "EXPERT"
                         });
@@ -259,7 +262,7 @@ namespace GreenCare.API.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DateTime")
+                    b.Property<DateTime>("AppointmentDateTime")
                         .HasColumnType("datetime");
 
                     b.Property<string>("ExpertId")
