@@ -69,6 +69,7 @@ namespace api.Repositories
                 return new RegisterResultDto { IsSuccessful = false, Errors = roleResult.Errors.Select(e => e.Description) };
             }
             var token = await _tokenService.CreateToken(user);
+
             return new RegisterResultDto { IsSuccessful = true, Email = user.Email, Token = token };
         }
 
