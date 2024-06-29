@@ -17,5 +17,7 @@ namespace api.Interfaces
         Task<IdentityResult> UpdateAsync(string email, UpdateUserDto updateUserDto);
         Task<string> GetUserRoleAsync(ApplicationUser user);
         Task<ApplicationUser> GetUserByIdAsync(string id);
+        Task<IdentityResult> LockUserAsync(string email);
+        Task<IdentityResult> UnlockUserAsync(string email);
     }
 }

@@ -199,5 +199,27 @@ namespace api.Repositories
         {
             return await _userManager.FindByIdAsync(id);
         }
+
+        public async Task<IdentityResult> LockUserAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "User not found." });
+            }
+
+            return await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
+        }
+
+        public async Task<IdentityResult> UnlockUserAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "User not found." });
+            }
+
+            return await _userManager.SetLockoutEndDateAsync(user, null);
+        }
     }
 }

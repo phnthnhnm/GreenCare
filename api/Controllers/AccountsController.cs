@@ -1,5 +1,6 @@
 using api.Dtos.Account;
 using api.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -19,7 +20,7 @@ namespace api.Controllers
         public async Task<IActionResult> GetAll()
         {
             var users = await _accountsRepo.GetAllAsync();
-            var usersDto = users.Select(u => new AccountDto { Email = u.Email });
+            var usersDto = users.Select(u => new AccountDto { Email = u.Email, FirstName = u.FirstName, LastName = u.LastName });
             return Ok(usersDto);
         }
 
@@ -160,6 +161,38 @@ namespace api.Controllers
             var role = await _accountsRepo.GetUserRoleAsync(user);
 
             return Ok(new { role });
+        }
+
+        [HttpPut("{email}/lock")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> LockUser([FromRoute] string email)
+        {
+            var result = await _accountsRepo.LockUserAsync(email);
+
+            if (result.Succeeded)
+            {
+                return Ok(new { message = "User locked successfully." });
+            }
+            else
+            {
+                return BadRequest(result.Errors);
+            }
+        }
+
+        [HttpPut("{email}/unlock")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UnlockUser([FromRoute] string email)
+        {
+            var result = await _accountsRepo.UnlockUserAsync(email);
+
+            if (result.Succeeded)
+            {
+                return Ok(new { message = "User unlocked successfully." });
+            }
+            else
+            {
+                return BadRequest(result.Errors);
+            }
         }
     }
 }

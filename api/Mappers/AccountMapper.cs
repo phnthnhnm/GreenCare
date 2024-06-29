@@ -18,7 +18,9 @@ namespace api.Mappers
 
             return new AccountDto
             {
-                Email = user.Email
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName
             };
         }
 
