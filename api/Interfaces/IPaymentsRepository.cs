@@ -10,5 +10,6 @@ namespace api.Interfaces
         Task<Payment> CreateAsync(Payment payment);
         Task<Payment?> UpdateAsync(int id, UpdatePaymentDto paymentDto);
         Task<Payment?> DeleteAsync(int id);
+        Task<List<Payment>> GetPaymentsByUserAsync(ApplicationUser user);
     }
 }

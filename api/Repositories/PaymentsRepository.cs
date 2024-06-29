@@ -66,5 +66,10 @@ namespace api.Repositories
             await _context.SaveChangesAsync();
             return payment;
         }
+
+        public async Task<List<Payment>> GetPaymentsByUserAsync(ApplicationUser user)
+        {
+            return await _context.Payments.Where(p => p.Appointment.User == user).ToListAsync();
+        }
     }
 }
