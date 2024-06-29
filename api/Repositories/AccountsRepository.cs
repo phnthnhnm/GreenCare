@@ -119,5 +119,15 @@ namespace api.Repositories
             return await _userManager.FindByEmailAsync(email);
         }
 
+        public async Task<IdentityResult> DeleteAsync(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "User not found." });
+            }
+
+            return await _userManager.DeleteAsync(user);
+        }
     }
 }

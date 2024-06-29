@@ -10,5 +10,6 @@ namespace api.Interfaces
         Task<LoginResultDto> LoginAsync(LoginDto loginDto);
         Task<IdentityResult> ChangeRoleAsync(string id, string role);
         Task<ApplicationUser> GetUserByEmailAsync(string email);
+        Task<IdentityResult> DeleteAsync(string id);
     }
 }
