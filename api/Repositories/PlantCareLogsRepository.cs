@@ -61,5 +61,15 @@ namespace api.Repositories
             await _context.SaveChangesAsync();
             return plantCareLog;
         }
+
+        public async Task<List<PlantCareLog>> GetPlantCareLogsByUserAsync(ApplicationUser user)
+        {
+            return await _context.PlantCareLogs.Where(p => p.Appointment.UserId == user.Id).ToListAsync();
+        }
+
+        public async Task<List<PlantCareLog>> GetPlantCareLogsByExpertAsync(ApplicationUser expert)
+        {
+            return await _context.PlantCareLogs.Where(p => p.Appointment.ExpertId == expert.Id).ToListAsync();
+        }
     }
 }

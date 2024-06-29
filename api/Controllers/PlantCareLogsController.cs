@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Dtos.PlantCareLog;
+using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -14,9 +16,12 @@ namespace api.Controllers
     public class PlantCareLogsController : ControllerBase
     {
         private readonly IPlantCareLogsRepository _plantCareLogsRepo;
-        public PlantCareLogsController(IPlantCareLogsRepository plantCareLogsRepo)
+        private readonly IAccountsRepository _accountsRepo;
+
+        public PlantCareLogsController(IPlantCareLogsRepository plantCareLogsRepo, IAccountsRepository accountsRepo)
         {
             _plantCareLogsRepo = plantCareLogsRepo;
+            _accountsRepo = accountsRepo;
         }
 
         [HttpGet]
@@ -68,5 +73,26 @@ namespace api.Controllers
             return NoContent();
         }
 
+        [HttpGet("user")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> GetUserPlantCareLogs()
+        {
+            var userEmail = User.GetUserEmail();
+            var user = await _accountsRepo.GetUserByEmailAsync(userEmail);
+            var plantCareLogs = await _plantCareLogsRepo.GetPlantCareLogsByUserAsync(user);
+            var plantCareLogDtos = plantCareLogs.Select(plantCareLog => plantCareLog.ToPlantCareLogDto());
+            return Ok(plantCareLogDtos);
+        }
+
+        [HttpGet("expert")]
+        [Authorize(Roles = "Expert")]
+        public async Task<IActionResult> GetExpertPlantCareLogs()
+        {
+            var expertEmail = User.GetUserEmail();
+            var expert = await _accountsRepo.GetUserByEmailAsync(expertEmail);
+            var plantCareLogs = await _plantCareLogsRepo.GetPlantCareLogsByExpertAsync(expert);
+            var plantCareLogDtos = plantCareLogs.Select(plantCareLog => plantCareLog.ToPlantCareLogDto());
+            return Ok(plantCareLogDtos);
+        }
     }
 }
