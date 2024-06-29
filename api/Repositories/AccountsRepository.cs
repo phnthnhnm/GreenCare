@@ -189,5 +189,10 @@ namespace api.Repositories
 
             return await _userManager.UpdateAsync(user);
         }
+
+        public async Task<string> GetUserRoleAsync(ApplicationUser user)
+        {
+            return (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+        }
     }
 }

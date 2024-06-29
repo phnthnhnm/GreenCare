@@ -21,7 +21,7 @@ namespace api.Controllers
         }
 
 
-        [HttpGet("get-all")]
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var expertServices = await _expertServiceRepo.GetAllAsync();
@@ -30,7 +30,7 @@ namespace api.Controllers
             return Ok(expertServicesDto);
         }
 
-        [HttpGet]
+        [HttpGet("expert")]
         [Authorize(Roles = "Expert")]
         public async Task<IActionResult> GetExpertServices()
         {
@@ -49,6 +49,15 @@ namespace api.Controllers
             var expertDtos = experts.Select(e => e.ToAccountDto());
 
             return Ok(expertDtos);
+        }
+
+        [HttpGet("{expertId}/services")]
+        public async Task<IActionResult> GetServicesByExpertId(string expertId)
+        {
+            var services = await _expertServiceRepo.GetServicesByExpertIdAsync(expertId);
+            var serviceDtos = services.Select(s => s.ToServiceDto());
+
+            return Ok(serviceDtos);
         }
 
         [HttpPost]

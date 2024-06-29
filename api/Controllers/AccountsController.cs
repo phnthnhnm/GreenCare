@@ -152,5 +152,14 @@ namespace api.Controllers
                 return BadRequest(result.Errors);
             }
         }
+
+        [HttpGet("{email}/role")]
+        public async Task<IActionResult> GetUserRole([FromRoute] string email)
+        {
+            var user = await _accountsRepo.GetUserByEmailAsync(email);
+            var role = await _accountsRepo.GetUserRoleAsync(user);
+
+            return Ok(new { role });
+        }
     }
 }
