@@ -79,11 +79,11 @@ namespace api.Controllers
             }
         }
 
-        [HttpPut("{email}/change-role")]
+        [HttpPut("{id}/change-role")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> ChangeRole([FromRoute] string email, string role)
+        public async Task<IActionResult> ChangeRole([FromRoute] string id, string role)
         {
-            var result = await _accountsRepo.ChangeRoleAsync(email, role);
+            var result = await _accountsRepo.ChangeRoleAsync(id, role);
 
             if (result.Succeeded)
             {
@@ -95,10 +95,10 @@ namespace api.Controllers
             }
         }
 
-        [HttpDelete("{email}")]
-        public async Task<IActionResult> Delete([FromRoute] string email)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] string id)
         {
-            var result = await _accountsRepo.DeleteAsync(email);
+            var result = await _accountsRepo.DeleteAsync(id);
 
             if (result.Succeeded)
             {
@@ -140,10 +140,10 @@ namespace api.Controllers
             }
         }
 
-        [HttpPut("{email}")]
-        public async Task<IActionResult> Update([FromRoute] string email, [FromBody] UpdateUserDto updateUserDto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update([FromRoute] string id, [FromBody] UpdateUserDto updateUserDto)
         {
-            var result = await _accountsRepo.UpdateAsync(email, updateUserDto);
+            var result = await _accountsRepo.UpdateAsync(id, updateUserDto);
 
             if (result.Succeeded)
             {
@@ -155,20 +155,20 @@ namespace api.Controllers
             }
         }
 
-        [HttpGet("{email}/role")]
-        public async Task<IActionResult> GetUserRole([FromRoute] string email)
+        [HttpGet("{id}/role")]
+        public async Task<IActionResult> GetUserRole([FromRoute] string id)
         {
-            var user = await _accountsRepo.GetUserByEmailAsync(email);
+            var user = await _accountsRepo.GetUserByIdAsync(id);
             var role = await _accountsRepo.GetUserRoleAsync(user);
 
             return Ok(new { role });
         }
 
-        [HttpPut("{email}/lock")]
+        [HttpPut("{id}/lock")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> LockUser([FromRoute] string email)
+        public async Task<IActionResult> LockUser([FromRoute] string id)
         {
-            var result = await _accountsRepo.LockUserAsync(email);
+            var result = await _accountsRepo.LockUserAsync(id);
 
             if (result.Succeeded)
             {
@@ -180,11 +180,11 @@ namespace api.Controllers
             }
         }
 
-        [HttpPut("{email}/unlock")]
+        [HttpPut("{id}/unlock")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UnlockUser([FromRoute] string email)
+        public async Task<IActionResult> UnlockUser([FromRoute] string id)
         {
-            var result = await _accountsRepo.UnlockUserAsync(email);
+            var result = await _accountsRepo.UnlockUserAsync(id);
 
             if (result.Succeeded)
             {

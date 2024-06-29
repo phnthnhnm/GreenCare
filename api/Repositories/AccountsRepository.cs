@@ -81,9 +81,9 @@ namespace api.Repositories
             return new RegisterResultDto { IsSuccessful = true, Email = user.Email, Token = token };
         }
 
-        public async Task<IdentityResult> ChangeRoleAsync(string email, string role)
+        public async Task<IdentityResult> ChangeRoleAsync(string id, string role)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByIdAsync(id);
 
             if (user == null)
             {
@@ -127,9 +127,9 @@ namespace api.Repositories
             return await _userManager.FindByEmailAsync(email);
         }
 
-        public async Task<IdentityResult> DeleteAsync(string email)
+        public async Task<IdentityResult> DeleteAsync(string id)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
                 return IdentityResult.Failed(new IdentityError { Description = "User not found." });
@@ -174,9 +174,9 @@ namespace api.Repositories
             return await _userManager.ResetPasswordAsync(user, token, password);
         }
 
-        public async Task<IdentityResult> UpdateAsync(string email, UpdateUserDto updateUserDto)
+        public async Task<IdentityResult> UpdateAsync(string id, UpdateUserDto updateUserDto)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
                 return IdentityResult.Failed(new IdentityError { Description = "User not found." });
@@ -200,9 +200,9 @@ namespace api.Repositories
             return await _userManager.FindByIdAsync(id);
         }
 
-        public async Task<IdentityResult> LockUserAsync(string email)
+        public async Task<IdentityResult> LockUserAsync(string id)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
                 return IdentityResult.Failed(new IdentityError { Description = "User not found." });
@@ -211,9 +211,9 @@ namespace api.Repositories
             return await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
         }
 
-        public async Task<IdentityResult> UnlockUserAsync(string email)
+        public async Task<IdentityResult> UnlockUserAsync(string id)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
                 return IdentityResult.Failed(new IdentityError { Description = "User not found." });
