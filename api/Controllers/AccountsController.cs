@@ -122,5 +122,20 @@ namespace api.Controllers
                 return BadRequest(result.Errors);
             }
         }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
+        {
+            var result = await _accountsRepo.ResetPasswordAsync(resetPasswordDto.Email, resetPasswordDto.Token, resetPasswordDto.Password);
+
+            if (result.Succeeded)
+            {
+                return Ok(new { message = "Password reset successfully." });
+            }
+            else
+            {
+                return BadRequest(result.Errors);
+            }
+        }
     }
 }

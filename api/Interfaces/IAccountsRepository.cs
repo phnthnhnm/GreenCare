@@ -13,5 +13,6 @@ namespace api.Interfaces
         Task<ApplicationUser> GetUserByEmailAsync(string email);
         Task<IdentityResult> DeleteAsync(string email);
         Task<IdentityResult> ConfirmEmailAsync(string email, string token);
+        Task<IdentityResult> ResetPasswordAsync(string email, string token, string password);
     }
 }

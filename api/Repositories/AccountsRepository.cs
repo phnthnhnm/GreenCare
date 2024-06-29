@@ -152,8 +152,26 @@ namespace api.Repositories
             {
                 return IdentityResult.Failed(new IdentityError { Description = "User not found." });
             }
-
             return await _userManager.ConfirmEmailAsync(user, token);
+        }
+
+        public async Task SendForgotPasswordEmail(string email, ApplicationUser user)
+        {
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var passwordResetLink = $"http://localhost:5062/api/accounts/reset-password?Email={email}&Token={token}";
+            await _emailService.SendEmailAsync(email, "Reset Your Password", $"Reset your password by <a href='{passwordResetLink}'>clicking here</a>.", true);
+
+        }
+
+        public async Task<IdentityResult> ResetPasswordAsync(string email, string token, string password)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "User not found." });
+            }
+
+            return await _userManager.ResetPasswordAsync(user, token, password);
         }
     }
 }
