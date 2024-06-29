@@ -71,5 +71,10 @@ namespace api.Repositories
         {
             return await _context.Reviews.Where(review => review.UserId == user.Id).ToListAsync();
         }
+
+        public async Task<List<Review>> GetReviewsByUserIdAsync(string userId)
+        {
+            return await _context.Reviews.Where(review => review.UserId == userId).ToListAsync();
+        }
     }
 }

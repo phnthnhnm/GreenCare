@@ -194,5 +194,10 @@ namespace api.Repositories
         {
             return (await _userManager.GetRolesAsync(user)).FirstOrDefault();
         }
+
+        public async Task<ApplicationUser> GetUserByIdAsync(string id)
+        {
+            return await _userManager.FindByIdAsync(id);
+        }
     }
 }

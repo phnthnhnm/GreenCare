@@ -16,5 +16,6 @@ namespace api.Interfaces
         Task<IdentityResult> ResetPasswordAsync(string email, string token, string password);
         Task<IdentityResult> UpdateAsync(string email, UpdateUserDto updateUserDto);
         Task<string> GetUserRoleAsync(ApplicationUser user);
+        Task<ApplicationUser> GetUserByIdAsync(string id);
     }
 }

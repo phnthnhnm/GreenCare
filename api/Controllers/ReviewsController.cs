@@ -91,5 +91,26 @@ namespace api.Controllers
             var reviewDtos = reviews.Select(review => review.ToReviewDto());
             return Ok(reviewDtos);
         }
+
+        [HttpGet("user/{userId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetReviewsByUserId(string userId)
+        {
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userIdGuid))
+            {
+                ModelState.AddModelError("userId", "Invalid user ID format.");
+                return BadRequest(ModelState);
+            }
+
+            var user = await _accountsRepo.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound(new { message = "User not found." });
+            }
+
+            var reviews = await _reviewsRepo.GetReviewsByUserIdAsync(userId);
+            var reviewDtos = reviews.Select(review => review.ToReviewDto());
+            return Ok(reviewDtos);
+        }
     }
 }
