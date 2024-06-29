@@ -2,6 +2,7 @@ using api.Dtos.Account;
 using api.Interfaces;
 using api.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace api.Repositories
@@ -11,12 +12,19 @@ namespace api.Repositories
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ITokenService _tokenService;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IEmailService _emailService;
 
-        public AccountsRepository(UserManager<ApplicationUser> userManager, ITokenService tokenService, SignInManager<ApplicationUser> signInManager)
+        public AccountsRepository(UserManager<ApplicationUser> userManager, ITokenService tokenService, SignInManager<ApplicationUser> signInManager, IEmailService emailService)
         {
             _userManager = userManager;
             _tokenService = tokenService;
             _signInManager = signInManager;
+            _emailService = emailService;
+        }
+
+        public async Task<IEnumerable<ApplicationUser>> GetAllAsync()
+        {
+            return await _userManager.Users.ToListAsync();
         }
 
         public async Task<LoginResultDto> LoginAsync(LoginDto loginDto)
@@ -69,7 +77,7 @@ namespace api.Repositories
                 return new RegisterResultDto { IsSuccessful = false, Errors = roleResult.Errors.Select(e => e.Description) };
             }
             var token = await _tokenService.CreateToken(user);
-
+            await SendConfirmationEmail(registerDto.Email, user);
             return new RegisterResultDto { IsSuccessful = true, Email = user.Email, Token = token };
         }
 
@@ -119,7 +127,25 @@ namespace api.Repositories
             return await _userManager.FindByEmailAsync(email);
         }
 
-        public async Task<IdentityResult> DeleteAsync(string id)
+        public async Task<IdentityResult> DeleteAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "User not found." });
+            }
+
+            return await _userManager.DeleteAsync(user);
+        }
+
+        private async Task SendConfirmationEmail(string? email, ApplicationUser? user)
+        {
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var confirmationLink = $"http://localhost:5062/api/accounts/confirm-email?UserId={user.Id}&Token={token}";
+            await _emailService.SendEmailAsync(email, "Confirm Your Email", $"Please confirm your account by <a href='{confirmationLink}'>clicking here</a>;.", true);
+        }
+
+        public async Task<IdentityResult> ConfirmEmailAsync(string id, string token)
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
@@ -127,7 +153,7 @@ namespace api.Repositories
                 return IdentityResult.Failed(new IdentityError { Description = "User not found." });
             }
 
-            return await _userManager.DeleteAsync(user);
+            return await _userManager.ConfirmEmailAsync(user, token);
         }
     }
 }

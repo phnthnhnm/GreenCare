@@ -6,10 +6,12 @@ namespace api.Interfaces
 {
     public interface IAccountsRepository
     {
+        Task<IEnumerable<ApplicationUser>> GetAllAsync();
         Task<RegisterResultDto> RegisterAsync(RegisterDto registerDto);
         Task<LoginResultDto> LoginAsync(LoginDto loginDto);
         Task<IdentityResult> ChangeRoleAsync(string id, string role);
         Task<ApplicationUser> GetUserByEmailAsync(string email);
-        Task<IdentityResult> DeleteAsync(string id);
+        Task<IdentityResult> DeleteAsync(string email);
+        Task<IdentityResult> ConfirmEmailAsync(string email, string token);
     }
 }

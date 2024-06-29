@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Controllers
 {
     [ApiController]
-    [Route("api/account")]
+    [Route("api/accounts")]
     public class AccountsController : ControllerBase
     {
         private readonly IAccountsRepository _accountsRepo;
@@ -13,6 +13,14 @@ namespace api.Controllers
         public AccountsController(IAccountsRepository accountsRepo)
         {
             _accountsRepo = accountsRepo;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var users = await _accountsRepo.GetAllAsync();
+            var usersDto = users.Select(u => new AccountDto { Email = u.Email });
+            return Ok(usersDto);
         }
 
         [HttpPost("register")]
@@ -85,14 +93,29 @@ namespace api.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete([FromRoute] string id)
+        [HttpDelete("{email}")]
+        public async Task<IActionResult> Delete([FromRoute] string email)
         {
-            var result = await _accountsRepo.DeleteAsync(id);
+            var result = await _accountsRepo.DeleteAsync(email);
 
             if (result.Succeeded)
             {
                 return Ok(new { message = "User deleted successfully." });
+            }
+            else
+            {
+                return BadRequest(result.Errors);
+            }
+        }
+
+        [HttpPost("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail([FromQuery] ConfirmEmailDto confirmEmailDto)
+        {
+            var result = await _accountsRepo.ConfirmEmailAsync(confirmEmailDto.UserId, confirmEmailDto.Token);
+
+            if (result.Succeeded)
+            {
+                return Ok(new { message = "Email confirmed successfully." });
             }
             else
             {

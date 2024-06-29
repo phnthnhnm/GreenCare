@@ -61,7 +61,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequiredLength = 8;
     options.User.RequireUniqueEmail = true;
 })
-.AddEntityFrameworkStores<GreenCareDbContext>();
+.AddEntityFrameworkStores<GreenCareDbContext>()
+.AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -98,6 +99,7 @@ builder.Services.AddScoped<IAppointmentServicesRepository, AppointmentServicesRe
 builder.Services.AddScoped<IPaymentsRepository, PaymentsRepository>();
 builder.Services.AddScoped<IReviewsRepository, ReviewsRepository>();
 builder.Services.AddScoped<IPlantCareLogsRepository, PlantCareLogsRepository>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
 
