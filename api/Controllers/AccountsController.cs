@@ -85,6 +85,19 @@ namespace api.Controllers
             }
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] string id)
+        {
+            var result = await _accountsRepo.DeleteAsync(id);
 
+            if (result.Succeeded)
+            {
+                return Ok(new { message = "User deleted successfully." });
+            }
+            else
+            {
+                return BadRequest(result.Errors);
+            }
+        }
     }
 }
