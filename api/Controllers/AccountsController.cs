@@ -137,5 +137,20 @@ namespace api.Controllers
                 return BadRequest(result.Errors);
             }
         }
+
+        [HttpPut("{email}")]
+        public async Task<IActionResult> Update([FromRoute] string email, [FromBody] UpdateUserDto updateUserDto)
+        {
+            var result = await _accountsRepo.UpdateAsync(email, updateUserDto);
+
+            if (result.Succeeded)
+            {
+                return Ok(new { message = "User updated successfully." });
+            }
+            else
+            {
+                return BadRequest(result.Errors);
+            }
+        }
     }
 }

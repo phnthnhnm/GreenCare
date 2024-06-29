@@ -21,5 +21,21 @@ namespace api.Mappers
                 Email = user.Email
             };
         }
+
+        public static ApplicationUser ToApplicationUserFromUpdateUserDto(this UpdateUserDto updateUserDto)
+        {
+            if (updateUserDto == null)
+            {
+                throw new ArgumentNullException(nameof(updateUserDto));
+            }
+
+            return new ApplicationUser
+            {
+                FirstName = updateUserDto.FirstName,
+                LastName = updateUserDto.LastName,
+                PhoneNumber = updateUserDto.PhoneNumber,
+                Address = updateUserDto.Address
+            };
+        }
     }
 }

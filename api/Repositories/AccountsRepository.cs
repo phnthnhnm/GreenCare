@@ -173,5 +173,21 @@ namespace api.Repositories
 
             return await _userManager.ResetPasswordAsync(user, token, password);
         }
+
+        public async Task<IdentityResult> UpdateAsync(string email, UpdateUserDto updateUserDto)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "User not found." });
+            }
+
+            user.FirstName = updateUserDto.FirstName;
+            user.LastName = updateUserDto.LastName;
+            user.PhoneNumber = updateUserDto.PhoneNumber;
+            user.Address = updateUserDto.Address;
+
+            return await _userManager.UpdateAsync(user);
+        }
     }
 }
