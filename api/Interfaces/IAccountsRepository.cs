@@ -9,7 +9,7 @@ namespace api.Interfaces
         Task<IEnumerable<ApplicationUser>> GetAllAsync();
         Task<RegisterResultDto> RegisterAsync(RegisterDto registerDto);
         Task<LoginResultDto> LoginAsync(LoginDto loginDto);
-        Task<IdentityResult> ChangeRoleAsync(string id, string role);
+        Task<IdentityResult> ChangeRoleAsync(string email, string role);
         Task<ApplicationUser> GetUserByEmailAsync(string email);
         Task<IdentityResult> DeleteAsync(string email);
         Task<IdentityResult> ConfirmEmailAsync(string email, string token);
@@ -19,5 +19,7 @@ namespace api.Interfaces
         Task<ApplicationUser> GetUserByIdAsync(string id);
         Task<IdentityResult> LockUserAsync(string email);
         Task<IdentityResult> UnlockUserAsync(string email);
+        Task<string> GetUserIdByEmailAsync(string email);
+        Task<string> GetUserEmailByIdAsync(string id);
     }
 }

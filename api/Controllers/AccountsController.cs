@@ -79,10 +79,11 @@ namespace api.Controllers
             }
         }
 
-        [HttpPut("{id}/change-role")]
-        public async Task<IActionResult> ChangeRole([FromRoute] string id, string role)
+        [HttpPut("{email}/change-role")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ChangeRole([FromRoute] string email, string role)
         {
-            var result = await _accountsRepo.ChangeRoleAsync(id, role);
+            var result = await _accountsRepo.ChangeRoleAsync(email, role);
 
             if (result.Succeeded)
             {
@@ -193,6 +194,24 @@ namespace api.Controllers
             {
                 return BadRequest(result.Errors);
             }
+        }
+
+        [HttpGet("{email}/id")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetUserIdByEmail([FromRoute] string email)
+        {
+            var id = await _accountsRepo.GetUserIdByEmailAsync(email);
+
+            return Ok(new { id });
+        }
+
+        [HttpGet("{id}/email")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetUserEmailById([FromRoute] string id)
+        {
+            var email = await _accountsRepo.GetUserEmailByIdAsync(id);
+
+            return Ok(new { email });
         }
     }
 }

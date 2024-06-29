@@ -81,9 +81,9 @@ namespace api.Repositories
             return new RegisterResultDto { IsSuccessful = true, Email = user.Email, Token = token };
         }
 
-        public async Task<IdentityResult> ChangeRoleAsync(string id, string role)
+        public async Task<IdentityResult> ChangeRoleAsync(string email, string role)
         {
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await _userManager.FindByEmailAsync(email);
 
             if (user == null)
             {
@@ -220,6 +220,18 @@ namespace api.Repositories
             }
 
             return await _userManager.SetLockoutEndDateAsync(user, null);
+        }
+
+        public async Task<string> GetUserIdByEmailAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            return user.Id;
+        }
+
+        public async Task<string> GetUserEmailByIdAsync(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            return user.Email;
         }
     }
 }
