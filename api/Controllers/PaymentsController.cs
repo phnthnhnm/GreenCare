@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Dtos.Payment;
+using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -14,10 +16,12 @@ namespace api.Controllers
     public class PaymentsController : ControllerBase
     {
         private readonly IPaymentsRepository _paymentsRepo;
+        private readonly IAccountsRepository _accountsRepo;
 
-        public PaymentsController(IPaymentsRepository paymentsRepo)
+        public PaymentsController(IPaymentsRepository paymentsRepo, IAccountsRepository accountsRepo)
         {
             _paymentsRepo = paymentsRepo;
+            _accountsRepo = accountsRepo;
         }
 
         [HttpGet]
@@ -70,6 +74,17 @@ namespace api.Controllers
             }
 
             return NoContent();
+        }
+
+        [HttpGet("user")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> GetPaymentsByUser()
+        {
+            var userEmail = User.GetUserEmail();
+            var user = await _accountsRepo.GetUserByEmailAsync(userEmail);
+            var payments = await _paymentsRepo.GetPaymentsByUserAsync(user);
+            var paymentsDto = payments.Select(p => p.ToPaymentDto());
+            return Ok(paymentsDto);
         }
     }
 }

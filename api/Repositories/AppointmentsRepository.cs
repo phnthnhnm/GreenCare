@@ -79,5 +79,15 @@ namespace api.Repositories
         {
             return await _context.Appointments.Where(a => a.ExpertId == expertId).Include(a => a.Payment).ToListAsync();
         }
+
+        public async Task<List<Appointment>> GetAppointmentsByUserAsync(ApplicationUser user)
+        {
+            return await _context.Appointments.Where(a => a.User == user).Include(a => a.Payment).ToListAsync();
+        }
+
+        public async Task<List<Appointment>> GetAppointmentsByExpertAsync(ApplicationUser expert)
+        {
+            return await _context.Appointments.Where(a => a.Expert == expert).Include(a => a.Payment).ToListAsync();
+        }
     }
 }

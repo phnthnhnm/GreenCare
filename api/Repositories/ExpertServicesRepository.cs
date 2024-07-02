@@ -70,5 +70,13 @@ namespace api.Repositories
             _context.ExpertServices.Remove(expertService);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<List<Service>> GetServicesByExpertIdAsync(string expertId)
+        {
+            return await _context.ExpertServices
+                .Where(es => es.ExpertId == expertId)
+                .Select(es => es.Service)
+                .ToListAsync();
+        }
     }
 }

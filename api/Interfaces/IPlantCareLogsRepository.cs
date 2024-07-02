@@ -10,5 +10,7 @@ namespace api.Interfaces
         Task<PlantCareLog> CreateAsync(PlantCareLog plantCareLog);
         Task<PlantCareLog?> UpdateAsync(int id, UpdatePlantCareLogDto updateDto);
         Task<PlantCareLog?> DeleteAsync(int id);
+        Task<List<PlantCareLog>> GetPlantCareLogsByUserAsync(ApplicationUser user);
+        Task<List<PlantCareLog>> GetPlantCareLogsByExpertAsync(ApplicationUser expert);
     }
 }

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Dtos.Review;
+using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -14,10 +16,12 @@ namespace api.Controllers
     public class ReviewsController : ControllerBase
     {
         private readonly IReviewsRepository _reviewsRepo;
+        private readonly IAccountsRepository _accountsRepo;
 
-        public ReviewsController(IReviewsRepository reviewsRepo)
+        public ReviewsController(IReviewsRepository reviewsRepo, IAccountsRepository accountsRepo)
         {
             _reviewsRepo = reviewsRepo;
+            _accountsRepo = accountsRepo;
         }
 
         [HttpGet]
@@ -70,6 +74,43 @@ namespace api.Controllers
             }
 
             return NoContent();
+        }
+
+        [HttpGet("user")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> GetReviewsByUser()
+        {
+            var userEmail = User.GetUserEmail();
+            var user = await _accountsRepo.GetUserByEmailAsync(userEmail);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var reviews = await _reviewsRepo.GetReviewsByUserAsync(user);
+            var reviewDtos = reviews.Select(review => review.ToReviewDto());
+            return Ok(reviewDtos);
+        }
+
+        [HttpGet("user/{userId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetReviewsByUserId(string userId)
+        {
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userIdGuid))
+            {
+                ModelState.AddModelError("userId", "Invalid user ID format.");
+                return BadRequest(ModelState);
+            }
+
+            var user = await _accountsRepo.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound(new { message = "User not found." });
+            }
+
+            var reviews = await _reviewsRepo.GetReviewsByUserIdAsync(userId);
+            var reviewDtos = reviews.Select(review => review.ToReviewDto());
+            return Ok(reviewDtos);
         }
     }
 }

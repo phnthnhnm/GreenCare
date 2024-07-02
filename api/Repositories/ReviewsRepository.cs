@@ -66,5 +66,15 @@ namespace api.Repositories
             await _context.SaveChangesAsync();
             return review;
         }
+
+        public async Task<List<Review>> GetReviewsByUserAsync(ApplicationUser user)
+        {
+            return await _context.Reviews.Where(review => review.UserId == user.Id).ToListAsync();
+        }
+
+        public async Task<List<Review>> GetReviewsByUserIdAsync(string userId)
+        {
+            return await _context.Reviews.Where(review => review.UserId == userId).ToListAsync();
+        }
     }
 }

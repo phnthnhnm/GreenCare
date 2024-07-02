@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Dtos.Appointment;
+using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -14,10 +16,12 @@ namespace api.Controllers
     public class AppointmentsController : ControllerBase
     {
         private readonly IAppointmentsRepository _appointmentsRepo;
+        private readonly IAccountsRepository _accountsRepo;
 
-        public AppointmentsController(IAppointmentsRepository appointmentsRepo)
+        public AppointmentsController(IAppointmentsRepository appointmentsRepo, IAccountsRepository accountsRepo)
         {
             _appointmentsRepo = appointmentsRepo;
+            _accountsRepo = accountsRepo;
         }
 
         [HttpGet]
@@ -43,6 +47,7 @@ namespace api.Controllers
         }
 
         [HttpGet("user/{userId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetByUserId(string userId)
         {
             var appointments = await _appointmentsRepo.GetAppointmentsByUserIdAsync(userId);
@@ -52,6 +57,7 @@ namespace api.Controllers
         }
 
         [HttpGet("expert/{expertId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetByExpertId(string expertId)
         {
             var appointments = await _appointmentsRepo.GetAppointmentsByExpertIdAsync(expertId);
@@ -104,6 +110,30 @@ namespace api.Controllers
             }
 
             return NoContent();
+        }
+
+        [HttpGet("user")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> GetUserAppointments()
+        {
+            var userEmail = User.GetUserEmail();
+            var user = await _accountsRepo.GetUserByEmailAsync(userEmail);
+            var appointments = await _appointmentsRepo.GetAppointmentsByUserAsync(user);
+            var appointmentDtos = appointments.Select(a => a.ToAppointmentDto());
+
+            return Ok(appointmentDtos);
+        }
+
+        [HttpGet("expert")]
+        [Authorize(Roles = "Expert")]
+        public async Task<IActionResult> GetExpertAppointments()
+        {
+            var expertEmail = User.GetUserEmail();
+            var expert = await _accountsRepo.GetUserByEmailAsync(expertEmail);
+            var appointments = await _appointmentsRepo.GetAppointmentsByExpertAsync(expert);
+            var appointmentDtos = appointments.Select(a => a.ToAppointmentDto());
+
+            return Ok(appointmentDtos);
         }
     }
 }
