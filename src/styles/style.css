@@ -446,18 +446,14 @@
 /* Google Fonts - Poppins */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
 .login-signup-container{
-    height: 75vh;
+    margin-top: 3%;
+    min-height: 80vh;
     width: 100%;
-    display: flex;
     align-items: center;
     justify-content: center;
+    display: flex;
+    flex-direction: column; 
 }
 .form{
     position: absolute;
@@ -465,20 +461,8 @@
     width: 100%;
     padding: 30px;
     border-radius: 6px;
-    background: #FFF;
 }
-.form.signup{
-    opacity: 0;
-    pointer-events: none;
-}
-.forms.show-signup .form.signup{
-    opacity: 1;
-    pointer-events: auto;
-}
-.forms.show-signup .form.login{
-    opacity: 0;
-    pointer-events: none;
-}
+    
 header{
     font-size: 28px;
     font-weight: 600;
@@ -488,16 +472,22 @@ header{
 form{
     margin-top: 30px;
 }
+
+.field {
+    margin-top: 20px;
+}
+
 .form .field{
-    position: relative;
+    position:relative;
     height: 50px;
     width: 100%;
     margin-top: 20px;
+    margin-bottom: 20px ;
     border-radius: 6px;
 }
 .field input,
-.field button{
-    height: 100%;
+.field button {
+    height: 50px;
     width: 100%;
     border: none;
     font-size: 16px;
@@ -515,19 +505,20 @@ form{
 
 
 
-.field.success input {
-    border-color: #09c372;
-}
-
-.field.error input{
-    border-color: #ff3860;
-}
-
-.field .error {
-
+.error-field {
+    position: relative;
     color: #ff3860;
-    font-size: 9px;
-    height: 23px;
+    font-size: 15px;
+    height: auto;
+    margin-top: 10px;
+}
+
+.success-field {
+    position: relative;
+    color: #09c372;
+    font-size: 15px;
+    height: auto;
+    margin-top: 10px;
 }
 
 
@@ -544,7 +535,7 @@ form{
 }
 .field button{
     color: #fff;
-    background-color: #0171d3;
+    background-color: #09c372;
     transition: all 0.3s ease;
     cursor: pointer;
     margin-top: 12px;

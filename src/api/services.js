@@ -8,8 +8,13 @@ export const getAllServices = async () => {
 };
 
 export const getServiceById = async (id) => {
-    const response = await axios.get(`${API_URL}/${id}`);
-    return response.data;
+    try {
+      const response = await axios.get(`${API_URL}/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching service:', error);
+      throw error;
+    }
 };
 
 export const createService = async (service) => {

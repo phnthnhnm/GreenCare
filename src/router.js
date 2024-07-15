@@ -5,7 +5,6 @@ import Home from "./pages/users/home/Home";
 import MasterLayout from "./pages/users/layout/Layout";
 import ExpertLayout from "./pages/expert/layout/Layout";
 import AdminLayout from "./pages/admin/layout/Layout";
-import LoginSignupForm from "./pages/users/login/register-login";
 import Expert from "./pages/expert/expert";
 import Admin from "./pages/admin/admin";
 import About from './pages/users/about/about';
@@ -14,6 +13,9 @@ import Service from './pages/users/service/service';
 import Contact from './pages/users/contact/contact';
 import ExpertUserView from './pages/users/expert/expert';
 import BookingView from './pages/users/booking/booking';
+import LoginForm from './pages/users/login/login';
+import SignupForm from './pages/users/login/register';
+import Logout from './pages/users/login/logout';
 
 
 const userRoutes = (routes) => {
@@ -67,6 +69,7 @@ const guestRoutes = (routes) => {
 const RouterCustom = () => {
     const userRouters = [
         { path: ROUTERS.USER.HOME, component: <Home /> },
+        { path: ROUTERS.USER.LOGOUT, component: <Logout /> },
 
     ];
     const guestRouters = [
@@ -74,8 +77,8 @@ const RouterCustom = () => {
         { path: ROUTERS.GUEST.ABOUT, component: <About/>},
         { path: ROUTERS.GUEST.SERVICE, component: <Service/>},
         { path: ROUTERS.GUEST.EXPERTS, component: <ExpertUserView/>},
-        { path: ROUTERS.GUEST.LOGIN, component: <LoginSignupForm isLogin={true} /> },
-        { path: ROUTERS.GUEST.REGISTER, component: <LoginSignupForm isLogin={false} /> },
+        { path: ROUTERS.GUEST.LOGIN, component: <LoginForm/> },
+        { path: ROUTERS.GUEST.REGISTER, component: <SignupForm/> },
         { path: ROUTERS.GUEST.REVIEWS, component: <Review/>},
         { path: ROUTERS.GUEST.CONTACT, component: <Contact/>},
         { path: ROUTERS.GUEST.BOOK, component: <BookingView/>},

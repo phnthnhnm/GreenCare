@@ -17,7 +17,7 @@ export const getExpertServices = async () => {
 };
 
 export const getExpertsByServiceId = async (serviceId) => {
-    const response = await axios.get(`${API_URL}/${serviceId}/experts`);
+    const response = await axios.get(`${API_URL}/expert-services/${serviceId}/experts`);
     return response.data;
 };
 

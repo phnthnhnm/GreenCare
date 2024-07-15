@@ -1,9 +1,31 @@
-import { memo } from 'react';
-import { Link } from 'react-router-dom';
+import { memo, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { ROUTERS } from '../../../utils/router';
-
+import { jwtDecode } from 'jwt-decode';
 
 const Header = () => {
+    const [user, setUser] = useState(null);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        // Example: Fetch user data from localStorage or an API
+        const token = localStorage.getItem('token');
+        if (token !== null) {
+        const decodedToken = jwtDecode(token);
+
+            setUser(decodedToken);
+        }
+    }, []);
+
+    const handleLogout = () => {
+        // Perform logout logic, e.g., clearing localStorage and redirecting
+        localStorage.removeItem('token');
+        setUser(null);
+        window.location.reload();
+        navigate(ROUTERS.USER.LOGIN);
+    };
+
+
     return (
         <>
             {/* Topbar Start */}
@@ -68,7 +90,7 @@ const Header = () => {
                 </div>
             </div>
             {/* Topbar End */}
-            
+
             {/* Navbar & Hero Start */}
             <div className="container-fluid position-relative p-0">
                 <nav className="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
@@ -123,21 +145,36 @@ const Header = () => {
                             </Link>
 
                             <div className="nav-item dropdown">
-                                <a
-                                    href="#"
-                                    className="nav-link dropdown-toggle"
-                                    data-bs-toggle="dropdown"
-                                >
-                                    Account
-                                </a>
-                                <div className="dropdown-menu m-0">
-                                    <Link to={ROUTERS.GUEST.LOGIN} className="dropdown-item">
-                                        Login
-                                    </Link>
-                                    <Link to={ROUTERS.GUEST.REGISTER} className="dropdown-item">
-                                        Register
-                                    </Link>
-                                </div>
+                                {user ? (
+                                    <>
+                                        <a href="#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                            {user.email}
+                                        </a>
+                                        <div className="dropdown-menu m-0">
+                                            <a href="#" className="dropdown-item">
+                                                Profile
+                                            </a>
+                                            <a href="#" className="dropdown-item" onClick={handleLogout}>
+                                                Logout
+                                            </a>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <>
+                                        <a href="#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                            Account
+                                        </a>
+                                        <div className="dropdown-menu m-0">
+                                            <Link to={ROUTERS.GUEST.LOGIN} className="dropdown-item">
+                                                Login
+                                            </Link>
+                                            <Link to={ROUTERS.GUEST.REGISTER} className="dropdown-item">
+                                                Register
+                                            </Link>
+                                        </div>
+                                    </>
+                                )}
+
                             </div>
                         </div>
                     </div>
